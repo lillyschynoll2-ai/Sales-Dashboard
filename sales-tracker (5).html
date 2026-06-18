@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dein Sales Flow</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --cream:     #faf6f0;
+  --cream2:    #f3ecdf;
+  --surface:   #ffffff;
+  --surface2:  #fdfbf7;
+  --border:    #e8ddc8;
+  --terracotta:#c1693f;
+  --terracotta-soft: #d98b63;
+  --rose:      #c98a82;
+  --rose-soft: #e6c4bd;
+  --gold:      #b8923f;
+  --gold-soft: #e3cb96;
+  --brown:     #3a2f25;
+  --brown-soft:#6b5d4d;
+  --muted:     #9a8c76;
+  --success:   #7a9170;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--cream);
+  color: var(--brown);
+  font-family: var(--sans);
+  font-weight: 400;
+  min-height: 100vh;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ ONBOARDING ============ */
+#onboarding {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(160deg, #faf6f0 0%, #f3ecdf 60%, #ecdcc8 100%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+#onboarding.hidden { display: none; }
+
+.ob-card {
+  max-width: 560px;
+  width: 100%;
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 56px 48px;
+  box-shadow: 0 30px 80px -20px rgba(58,47,37,0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.ob-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--rose-soft) 0%, transparent 70%);
+  opacity: 0.5;
+  border-radius: 50%;
+}
+
+.ob-step { display: none; animation: fadeUp 0.5s ease; }
+.ob-step.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ob-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta); font-weight: 600; margin-bottom: 14px; }
+.ob-title { font-family: var(--serif); font-size: 36px; font-weight: 400; line-height: 1.25; color: var(--brown); margin-bottom: 12px; }
+.ob-title em { font-style: italic; color: var(--terracotta); }
+.ob-sub { font-size: 15px; color: var(--brown-soft); margin-bottom: 32px; line-height: 1.6; }
+
+.ob-input, .ob-textarea {
+  width: 100%;
+  background: var(--cream2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--brown);
+  outline: none;
+  transition: all 0.2s;
+}
+.ob-input:focus, .ob-textarea:focus { border-color: var(--terracotta); background: var(--surface); }
+.ob-textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
+.ob-input::placeholder, .ob-textarea::placeholder { color: var(--muted); }
+
+.ob-choices { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.ob-choice {
+  border: 1.5px solid var(--border);
+  background: var(--cream2);
+  border-radius: 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--brown-soft);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ob-choice:hover { border-color: var(--terracotta-soft); background: var(--surface); }
+.ob-choice.selected { border-color: var(--terracotta); background: #fbf1e9; color: var(--brown); font-weight: 500; }
+.ob-choice-dot { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; position: relative; }
+.ob-choice.selected .ob-choice-dot { border-color: var(--terracotta); }
+.ob-choice.selected .ob-choice-dot::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--terracotta); }
+.ob-choice-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.ob-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; }
+.ob-btn { padding: 14px 30px; border-radius: 100px; font-family: var(--sans); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+.ob-btn-primary { background: var(--terracotta); color: white; }
+.ob-btn-primary:hover { background: #a8572f; transform: translateY(-1px); box-shadow: 0 8px 20px -6px rgba(193,105,63,0.5); }
+.ob-btn-primary:active { transform: translateY(0); }
+.ob-btn-text { background: transparent; color: var(--muted); padding: 14px 8px; }
+.ob-btn-text:hover { color: var(--brown-soft); }
+
+.ob-input-wrap-prefix { position: relative; }
+.ob-prefix { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-family: var(--serif); font-size: 18px; color: var(--terracotta); pointer-events: none; }
+.ob-input-wrap-prefix .ob-input { padding-left: 38px; }
+
+/* ============ APP LAYOUT ============ */
+#app.hidden { display: none; }
+.app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+.sidebar { background: var(--surface2); border-right: 1px solid var(--border); padding: 36px 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+.logo-wrap { padding: 0 28px 28px; margin-bottom: 20px; }
+.logo-eyebrow { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta); font-weight: 600; margin-bottom: 6px; }
+.logo-name { font-family: var(--serif); font-size: 24px; font-weight: 400; color: var(--brown); line-height: 1.2; }
+.logo-name em { font-style: italic; color: var(--terracotta); }
+
+.mode-badge { display: inline-block; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 100px; margin-top: 10px; }
+.mode-badge.practice { background: #f3ecdf; color: var(--gold); }
+.mode-badge.real { background: #e8f0e4; color: var(--success); }
+
+.nav-section { padding: 0 16px; flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--brown-soft); transition: all 0.2s; }
+.nav-item:hover { background: var(--cream2); color: var(--brown); }
+.nav-item.active { background: var(--terracotta); color: white; box-shadow: 0 6px 16px -4px rgba(193,105,63,0.4); }
+.nav-icon { font-size: 15px; }
+
+.sidebar-footer { padding: 20px 28px 0; margin-top: auto; font-size: 12px; color: var(--muted); }
+.sidebar-name { font-weight: 600; color: var(--brown); margin-bottom: 2px; }
+
+.main { padding: 48px 56px; overflow-y: auto; max-width: 1080px; }
+.section { display: none; }
+.section.active { display: block; }
+
+.hero-greet { margin-bottom: 36px; }
+.hero-greet-mode { font-family: var(--serif); font-size: 22px; font-style: italic; color: var(--terracotta); margin-top: 4px; }
+.hero-greet-why { font-size: 14px; color: var(--brown-soft); margin-top: 10px; font-style: italic; max-width: 480px; }
+
+
+.log-hero-screen { display: flex; flex-direction: column; align-items: flex-start; }
+.log-hero-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 48px; text-align: center; width: 100%; max-width: 480px; }
+.log-hero-icon { font-size: 36px; color: var(--terracotta); margin-bottom: 18px; }
+.log-hero-text { font-family: var(--serif); font-size: 19px; color: var(--brown); margin-bottom: 28px; line-height: 1.5; }
+.log-step.hidden, .log-hero-screen.hidden { display: none; }
+
+/* Success screen */
+.log-success-screen.hidden { display: none; }
+.log-success-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; text-align: center; }
+.success-check-wrap { width: 140px; height: 140px; margin-bottom: 32px; }
+.success-check-svg { width: 100%; height: 100%; }
+.success-check-circle {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 4;
+  stroke-dasharray: 290;
+  stroke-dashoffset: 290;
+  animation: successCircleDraw 0.6s ease forwards;
+}
+.success-check-mark {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: successMarkDraw 0.4s ease forwards 0.5s, successPulse 1.4s ease-in-out 1s 2;
+  transform-origin: center;
+}
+@keyframes successCircleDraw { to { stroke-dashoffset: 0; } }
+@keyframes successMarkDraw { to { stroke-dashoffset: 0; } }
+@keyframes successPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+.success-title { font-family: var(--serif); font-size: 28px; color: var(--brown); margin-bottom: 8px; opacity: 0; animation: successFadeIn 0.5s ease forwards 0.9s; }
+.success-sub { font-size: 15px; color: var(--brown-soft); opacity: 0; animation: successFadeIn 0.5s ease forwards 1.1s; }
+@keyframes successFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+
+.hero-greet-eyebrow { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terracotta); font-weight: 600; margin-bottom: 10px; }
+.hero-greet-title { font-family: var(--serif); font-size: 44px; font-weight: 400; color: var(--brown); line-height: 1.15; }
+.hero-greet-title em { font-style: italic; color: var(--terracotta); }
+.hero-greet-sub { font-size: 14px; color: var(--brown-soft); margin-top: 10px; max-width: 480px; }
+
+.quote-card { background: linear-gradient(120deg, #f6ece0, #fbf1e9); border: 1px solid var(--border); border-radius: 20px; padding: 28px 32px; margin-bottom: 32px; position: relative; overflow: hidden; }
+.quote-mark { font-family: var(--serif); font-size: 60px; color: var(--gold-soft); position: absolute; top: 4px; left: 20px; line-height: 1; opacity: 0.6; }
+.quote-text { font-family: var(--serif); font-size: 20px; font-style: italic; color: var(--brown); line-height: 1.5; padding-left: 36px; }
+.quote-author { font-size: 12px; color: var(--terracotta); font-weight: 600; margin-top: 10px; padding-left: 36px; letter-spacing: 0.04em; }
+
+.goal-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px 32px; margin-bottom: 24px; }
+.goal-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+.goal-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.goal-nums { font-family: var(--serif); font-size: 15px; color: var(--brown-soft); }
+.goal-nums strong { color: var(--terracotta); font-size: 22px; font-weight: 500; }
+.goal-bar-bg { height: 14px; background: var(--cream2); border-radius: 100px; overflow: hidden; }
+.goal-bar-fill { height: 100%; background: linear-gradient(90deg, var(--terracotta-soft), var(--terracotta)); border-radius: 100px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+.goal-note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+.bottleneck-card { background: var(--surface); border: 1.5px solid var(--gold-soft); border-radius: 20px; padding: 28px 32px; margin-bottom: 24px; }
+.bottleneck-eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--terracotta); font-weight: 700; margin-bottom: 10px; }
+.bottleneck-main { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.bottleneck-name { font-family: var(--serif); font-size: 28px; color: var(--brown); }
+.bottleneck-value { font-family: var(--serif); font-size: 28px; color: var(--terracotta); font-weight: 500; }
+.bottleneck-next { font-size: 14px; color: var(--brown-soft); background: var(--cream2); border-radius: 12px; padding: 14px 18px; line-height: 1.5; }
+.bottleneck-next strong { color: var(--terracotta); }
+
+.mini-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+.mini-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.mini-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px 26px; display: flex; align-items: center; gap: 18px; }
+.mini-icon { font-size: 32px; }
+.mini-val { font-family: var(--serif); font-size: 28px; color: var(--brown); line-height: 1; }
+.mini-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 22px 20px; position: relative; }
+.stat-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+.stat-value { font-family: var(--serif); font-size: 36px; font-weight: 500; color: var(--brown); line-height: 1; }
+.stat-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+.pill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 100px; margin-top: 10px; }
+.pill-strong { background: #e8f0e4; color: var(--success); }
+.pill-mid { background: #fbf1de; color: var(--gold); }
+.pill-weak { background: #f7e8e0; color: var(--terracotta); }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px; margin-bottom: 20px; }
+.card-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--terracotta); font-weight: 700; margin-bottom: 22px; }
+
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--brown-soft); }
+
+.field input, .field select, .field textarea {
+  background: var(--cream2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  color: var(--brown);
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 13px 16px;
+  outline: none;
+  width: 100%;
+  transition: all 0.2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--terracotta); background: var(--surface); }
+.field input[type="number"] { font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--terracotta); padding-right: 76px; }
+.field input[type="time"] { font-family: var(--sans); font-size: 15px; color: var(--brown); padding-right: 16px; }
+
+.number-input-wrap { position: relative; }
+.num-btns { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: flex; gap: 4px; }
+.num-btn {
+  width: 30px; height: 30px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--brown-soft);
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  line-height: 1;
+}
+.num-btn:hover { background: var(--terracotta); border-color: var(--terracotta); color: white; transform: scale(1.08); }
+.num-btn:active { transform: scale(0.92); }
+.num-btn.bump { animation: bump 0.25s; }
+@keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.25); } 100% { transform: scale(1); } }
+
+.daily-goal-bar { background: var(--cream2); border-radius: 100px; height: 10px; overflow: hidden; margin-top: 8px; }
+.daily-goal-fill { height: 100%; background: var(--terracotta); border-radius: 100px; transition: width 0.5s; }
+.daily-goal-text { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+.btn { padding: 15px 34px; font-family: var(--sans); font-size: 14px; font-weight: 600; cursor: pointer; border: none; border-radius: 100px; transition: all 0.2s; position: relative; overflow: hidden; }
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--terracotta); color: white; }
+.btn-primary:hover { background: #a8572f; transform: translateY(-2px); box-shadow: 0 10px 24px -6px rgba(193,105,63,0.5); }
+.btn-primary:active { transform: translateY(0) scale(0.97); }
+.btn-secondary { background: var(--cream2); color: var(--brown-soft); border: 1.5px solid var(--border); }
+.btn-secondary:hover { border-color: var(--terracotta-soft); color: var(--brown); }
+.btn-danger { background: transparent; color: var(--muted); border: 1.5px solid var(--border); font-size: 12px; padding: 7px 14px; border-radius: 100px; }
+.btn-danger:hover { border-color: var(--terracotta); color: var(--terracotta); }
+.btn-ghost-add { background: var(--cream2); border: 1.5px dashed var(--border); color: var(--terracotta); font-size: 13px; font-weight: 600; padding: 12px 22px; border-radius: 100px; cursor: pointer; width: 100%; transition: all 0.2s; }
+.btn-ghost-add:hover { border-color: var(--terracotta); background: #fbf1e9; }
+.btn-shine::after { content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent); transition: left 0.6s; }
+.btn-shine:hover::after { left: 130%; }
+
+.date-row { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+.date-row label { font-size: 12px; font-weight: 600; color: var(--brown-soft); }
+.date-row input { background: var(--cream2); border: 1.5px solid var(--border); border-radius: 12px; color: var(--brown); font-size: 14px; padding: 10px 16px; outline: none; }
+.date-row input:focus { border-color: var(--terracotta); }
+
+.divider { display: flex; align-items: center; gap: 14px; margin: 28px 0 18px; }
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+.divider-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracotta); font-weight: 700; white-space: nowrap; }
+
+.field textarea { resize: vertical; min-height: 70px; font-size: 14px; line-height: 1.6; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* Time blocks (real mode) */
+.timeblock { background: var(--surface2); border: 1.5px solid var(--border); border-radius: 16px; padding: 20px 22px; margin-bottom: 14px; position: relative; transition: border-color 0.2s; }
+.timeblock.tb-error { border-color: var(--terracotta); }
+.tb-error-msg { font-size: 12px; color: var(--terracotta); margin-top: -6px; margin-bottom: 14px; font-weight: 600; display: none; }
+.tb-error-msg.show { display: block; }
+.timeblock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.timeblock-title { font-size: 12px; font-weight: 700; color: var(--terracotta); letter-spacing: 0.04em; }
+.timeblock-remove { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 13px; padding: 4px 10px; border-radius: 100px; }
+.timeblock-remove:hover { color: var(--terracotta); background: var(--cream2); }
+.timerange-row { display: flex; gap: 14px; margin-bottom: 14px; }
+.timerange-row .field { flex: 1; }
+.timeblock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+/* Practice mode skill sliders */
+.skill-slider-row { margin-bottom: 20px; }
+.skill-slider-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.skill-slider-label { font-size: 13px; font-weight: 600; color: var(--brown); }
+.skill-slider-val { font-family: var(--serif); font-size: 20px; color: var(--terracotta); font-weight: 500; min-width: 28px; text-align: right; }
+.skill-slider { width: 100%; height: 8px; border-radius: 100px; background: var(--cream2); outline: none; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.skill-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--terracotta); cursor: pointer; border: 3px solid white; box-shadow: 0 2px 8px rgba(193,105,63,0.4); transition: transform 0.15s; }
+.skill-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.skill-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--terracotta); cursor: pointer; border: 3px solid white; box-shadow: 0 2px 8px rgba(193,105,63,0.4); }
+.skill-scale-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+.partner-choices { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.partner-choice { flex: 1; min-width: 110px; border: 1.5px solid var(--border); background: var(--cream2); border-radius: 14px; padding: 14px 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--brown-soft); transition: all 0.2s; }
+.partner-choice:hover { border-color: var(--terracotta-soft); }
+.partner-choice.selected { border-color: var(--terracotta); background: #fbf1e9; color: var(--terracotta); }
+.partner-icon { font-size: 22px; display: block; margin-bottom: 6px; }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 12px 14px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--terracotta); font-weight: 700; border-bottom: 2px solid var(--cream2); }
+td { padding: 14px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--brown-soft); }
+td:first-child { color: var(--brown); font-weight: 500; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+
+.badge { display: inline-block; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 100px; }
+.badge-good { background: #e8f0e4; color: var(--success); }
+.badge-mid { background: #fbf1de; color: var(--gold); }
+.badge-low { background: #f7e8e0; color: var(--terracotta); }
+
+.funnel-wrap { display: flex; flex-direction: column; gap: 10px; margin: 8px 0; }
+.funnel-step { display: flex; align-items: center; gap: 16px; }
+.funnel-label { font-size: 12px; font-weight: 600; color: var(--brown-soft); width: 100px; text-align: right; }
+.funnel-bar-wrap { flex: 1; }
+.funnel-bar-bg { height: 38px; background: var(--cream2); border-radius: 100px; overflow: hidden; }
+.funnel-bar-fill { height: 100%; display: flex; align-items: center; padding: 0 18px; font-family: var(--serif); font-size: 16px; font-weight: 500; color: white; min-width: 38px; border-radius: 100px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+.funnel-pct { font-size: 12px; color: var(--muted); width: 44px; }
+
+.rates-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.rate-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 18px; padding: 22px 18px; text-align: center; }
+.rate-circle { width: 76px; height: 76px; border: 2px solid var(--gold-soft); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--terracotta); }
+.rate-name { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brown-soft); font-weight: 600; }
+.rate-desc { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+.chart-wrap { display: flex; align-items: flex-end; gap: 10px; height: 110px; padding-top: 8px; }
+.chart-bar-group { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.chart-bars { display: flex; align-items: flex-end; gap: 3px; width: 100%; height: 88px; }
+.chart-bar { flex: 1; min-height: 2px; transition: height 0.5s; border-radius: 3px 3px 0 0; }
+.chart-date { font-size: 10px; color: var(--muted); }
+
+.insight-list { display: flex; flex-direction: column; gap: 12px; }
+.insight-item { padding: 16px 20px; font-size: 14px; line-height: 1.6; color: var(--brown-soft); background: var(--surface2); border-radius: 14px; border-left: 3px solid var(--border); }
+.insight-item.warn { border-left-color: var(--gold); }
+.insight-item.good { border-left-color: var(--success); color: var(--brown); }
+
+.summary-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.summary-row:last-child { border-bottom: none; }
+.summary-key { color: var(--brown-soft); }
+.summary-val { font-family: var(--serif); font-size: 21px; font-weight: 500; color: var(--terracotta); }
+.summary-val.big { color: var(--success); }
+
+.deal-math-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.deal-math-cell { background: var(--surface2); border-radius: 16px; padding: 22px 16px; text-align: center; }
+.deal-math-num { font-family: var(--serif); font-size: 36px; font-weight: 500; color: var(--terracotta); line-height: 1; }
+.deal-math-label { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+.bw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 4px; }
+.bw-card { padding: 22px; border-radius: 18px; }
+.bw-card.best { background: #eef4eb; }
+.bw-card.worst { background: #faf0eb; }
+.bw-tag { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+.bw-card.best .bw-tag { color: var(--success); }
+.bw-card.worst .bw-tag { color: var(--terracotta); }
+.bw-date { font-size: 13px; color: var(--brown); margin-bottom: 4px; }
+.bw-stat { font-family: var(--serif); font-size: 28px; color: var(--brown); }
+.bw-note { font-size: 12px; color: var(--brown-soft); margin-top: 10px; font-style: italic; }
+
+.why-card { background: linear-gradient(120deg, #fbf1e9, #f6e8e2); border-radius: 18px; padding: 22px 26px; margin-top: 4px; }
+.why-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracotta); font-weight: 700; margin-bottom: 8px; }
+.why-text { font-family: var(--serif); font-size: 17px; font-style: italic; color: var(--brown); line-height: 1.5; }
+
+.best-window-card { background: var(--surface2); border-radius: 16px; padding: 20px 22px; margin-top: 4px; }
+.best-window-label { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.best-window-val { font-family: var(--serif); font-size: 26px; color: var(--terracotta); }
+.best-window-sub { font-size: 12px; color: var(--brown-soft); margin-top: 6px; }
+.window-bar-row { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.window-bar-label { font-size: 12px; color: var(--brown-soft); width: 92px; flex-shrink: 0; }
+.window-bar-bg { flex: 1; height: 26px; background: var(--cream2); border-radius: 100px; overflow: hidden; }
+.window-bar-fill { height: 100%; background: var(--terracotta-soft); border-radius: 100px; display: flex; align-items: center; padding: 0 12px; font-size: 11px; color: white; font-weight: 600; transition: width 0.6s; }
+
+/* Practice skill progress bars */
+.skill-progress-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.skill-progress-label { font-size: 12px; color: var(--brown-soft); width: 150px; flex-shrink: 0; }
+.skill-progress-bg { flex: 1; height: 24px; background: var(--cream2); border-radius: 100px; overflow: hidden; position: relative; }
+.skill-progress-fill { height: 100%; background: linear-gradient(90deg, var(--rose-soft), var(--terracotta)); border-radius: 100px; transition: width 0.6s; }
+.skill-progress-val { font-family: var(--serif); font-size: 15px; color: var(--brown); width: 36px; text-align: right; flex-shrink: 0; }
+.skill-progress-trend { font-size: 11px; font-weight: 600; width: 50px; text-align: right; flex-shrink: 0; }
+
+.partner-stat-row { display: flex; gap: 14px; margin-top: 4px; }
+.partner-stat-card { flex: 1; background: var(--surface2); border-radius: 14px; padding: 16px; text-align: center; }
+.partner-stat-icon { font-size: 22px; margin-bottom: 6px; }
+.partner-stat-num { font-family: var(--serif); font-size: 22px; color: var(--brown); }
+.partner-stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Weekly checkup modal */
+#weekly-checkup {
+  position: fixed; inset: 0; background: rgba(58,47,37,0.45);
+  z-index: 900; display: none; align-items: center; justify-content: center; padding: 24px;
+  overflow-y: auto;
+}
+#weekly-checkup.show { display: flex; }
+.wc-card { max-width: 640px; width: 100%; background: var(--surface); border-radius: 28px; padding: 48px 44px; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 80px -20px rgba(58,47,37,0.3); }
+.wc-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta); font-weight: 700; margin-bottom: 10px; }
+.wc-title { font-family: var(--serif); font-size: 30px; color: var(--brown); margin-bottom: 8px; }
+.wc-sub { font-size: 14px; color: var(--brown-soft); margin-bottom: 28px; line-height: 1.5; }
+.wc-field { margin-bottom: 20px; }
+.wc-field label { font-size: 13px; font-weight: 600; color: var(--brown); display: block; margin-bottom: 8px; }
+.wc-skip { text-align: center; margin-top: 8px; }
+.wc-skip span { font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
+.wc-skip span:hover { color: var(--terracotta); }
+
+/* Mode badge selector inside settings reuse ob-choice */
+.ob-choice .ob-choice-desc { margin-top: 2px; }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; flex-direction: row; flex-wrap: wrap; padding: 16px; }
+  .logo-wrap { padding: 0 16px 0 0; margin: 0; border-right: 1px solid var(--border); margin-right: 16px; }
+  .nav-section { flex-direction: row; flex-wrap: wrap; padding: 0; }
+  .sidebar-footer { display: none; }
+  .main { padding: 24px 18px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .rates-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-grid, .timeblock-grid { grid-template-columns: 1fr; }
+  .grid-2, .mini-row, .bw-grid { grid-template-columns: 1fr; }
+  .mini-row.three { grid-template-columns: 1fr; }
+  .deal-math-grid { grid-template-columns: repeat(2, 1fr); }
+  .ob-card, .wc-card { padding: 32px 22px; }
+  .ob-title { font-size: 28px; }
+  .timerange-row { flex-direction: column; gap: 10px; }
+  .partner-choices { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<!-- ============ ONBOARDING ============ -->
+<div id="onboarding">
+  <div class="ob-card" id="ob-card">
+
+    <div class="ob-step active" data-step="0">
+      <div class="ob-eyebrow">Bevor wir starten</div>
+      <div class="ob-title">Willkommen in<br><em>deinem</em> Sales Flow.</div>
+      <div class="ob-sub">Das hier ist mehr als ein Tracker. Es ist der Ort, an dem du siehst, wie weit du wirklich schon gekommen bist. Lass uns dafür ein paar Dinge über dich wissen.</div>
+      <div class="ob-nav" style="justify-content: flex-end;">
+        <button class="ob-btn ob-btn-primary" onclick="obNext()">Los geht's</button>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <span class="settings-link" onclick="document.getElementById('restore-file-input').click()">Hast du schon ein Backup? Hier wiederherstellen</span>
+        <input type="file" id="restore-file-input" accept=".json" style="display:none;" onchange="if(this.files[0]) importAllData(this.files[0])">
+      </div>
+    </div>
+
+    <div class="ob-step" data-step="1">
+      <div class="ob-eyebrow">Schritt 1 von 6</div>
+      <div class="ob-title">Wie dürfen wir<br>dich <em>nennen</em>?</div>
+      <input class="ob-input" id="ob-name" placeholder="Dein Name" autocomplete="off">
+      <div class="ob-nav">
+        <span></span>
+        <button class="ob-btn ob-btn-primary" onclick="obNext()">Weiter</button>
+      </div>
+    </div>
+
+    <div class="ob-step" data-step="2">
+      <div class="ob-eyebrow">Schritt 2 von 6</div>
+      <div class="ob-title">Wo stehst du<br>gerade <em>wirklich</em>?</div>
+      <div class="ob-sub">Es gibt keine falsche Antwort. Das hier entscheidet nur, wie dein Dashboard aussieht.</div>
+      <div class="ob-choices" id="ob-mode-choices">
+        <div class="ob-choice" data-val="practice" onclick="obSelectMode(this)">
+          <span class="ob-choice-dot"></span>
+          <div>
+            Ich übe noch<br><span class="ob-choice-desc">Mit KI, mit Anna, mit Freundinnen. Noch kein echter Job, kein Geld. Ziel: Konstanz im Üben.</span>
+          </div>
+        </div>
+        <div class="ob-choice" data-val="real" onclick="obSelectMode(this)">
+          <span class="ob-choice-dot"></span>
+          <div>
+            Ich bin im echten Job<br><span class="ob-choice-desc">Ich telefoniere mit echten Leads und will closen.</span>
+          </div>
+        </div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn ob-btn-text" onclick="obPrev()">Zurück</button>
+        <button class="ob-btn ob-btn-primary" onclick="obNext()">Weiter</button>
+      </div>
+    </div>
+
+    <!-- Step 3: real mode only -->
+    <div class="ob-step" data-step="3a">
+      <div class="ob-eyebrow">Schritt 3 von 6</div>
+      <div class="ob-title">Dein <em>Umsatzziel</em><br>pro Monat?</div>
+      <div class="ob-input-wrap-prefix">
+        <span class="ob-prefix">€</span>
+        <input class="ob-input" id="ob-revenue" type="number" placeholder="10000">
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn ob-btn-text" onclick="obPrev()">Zurück</button>
+        <button class="ob-btn ob-btn-primary" onclick="obNext()">Weiter</button>
+      </div>
+    </div>
+
+    <div class="ob-step" data-step="4a">
+      <div class="ob-eyebrow">Schritt 4 von 6</div>
+      <div class="ob-title">Wie viele Calls willst<br>du <em>pro Tag</em> schaffen?</div>
+      <div class="ob-sub">Ein realistisches Ziel. Wir passen es später jederzeit an.</div>
+      <input class="ob-input" id="ob-calls" type="number" placeholder="z.B. 15">
+      <div class="ob-nav">
+        <button class="ob-btn ob-btn-text" onclick="obPrev()">Zurück</button>
+        <button class="ob-btn ob-btn-primary" onclick="obNext()">Weiter</button>
+      </div>
+    </div>
+
+    <!-- Step 3: practice mode only -->
+    <div class="ob-step" data-step="3b">
+      <div class="ob-eyebrow">Schritt 3 von 6</div>
+      <div class="ob-title">Wie viele Sessions willst<br>du <em>pro Woche</em> üben?</div>
+      <div class="ob-sub">Konstanz schlägt Perfektion. Ein realistisches Ziel reicht völlig.</div>
+      <input class="ob-input" id="ob-sessions" type="number" placeholder="z.B. 5">
+      <div class="ob-nav">
+        <button class="ob-btn ob-btn-text" onclick="obPrev()">Zurück</button>
+        <button class="ob-btn ob-btn-primary" onclick="obNext()">Weiter</button>
+      </div>
+    </div>
+
+    <div class="ob-step" data-step="5">
+      <div class="ob-eyebrow">Schritt 5 von 6</div>
+      <div class="ob-title">Was ist dein <em>größeres Warum</em>?</div>
+      <div class="ob-sub" id="ob-why-prefix-display">Vervollständige den Satz: "Ich lerne Remote Sales, um..."</div>
+      <textarea class="ob-textarea" id="ob-why" placeholder="...mir alles geben zu können, was ich mir wünsche."></textarea>
+      <div class="ob-nav">
+        <button class="ob-btn ob-btn-text" onclick="obPrev()">Zurück</button>
+        <button class="ob-btn ob-btn-primary" onclick="obNext()">Weiter</button>
+      </div>
+    </div>
+
+    <div class="ob-step" data-step="6">
+      <div class="ob-eyebrow">Schritt 6 von 6</div>
+      <div class="ob-title">Seit wann machst<br>du <em>Sales</em>?</div>
+      <div class="ob-choices" id="ob-level-choices">
+        <div class="ob-choice" data-val="anfaenger" onclick="obSelectLevel(this)"><span class="ob-choice-dot"></span> Ich starte gerade erst</div>
+        <div class="ob-choice" data-val="fortgeschritten" onclick="obSelectLevel(this)"><span class="ob-choice-dot"></span> Seit ein paar Monaten dabei</div>
+        <div class="ob-choice" data-val="erfahren" onclick="obSelectLevel(this)"><span class="ob-choice-dot"></span> Ich bin erfahren</div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn ob-btn-text" onclick="obPrev()">Zurück</button>
+        <button class="ob-btn ob-btn-primary" onclick="obFinish()">Fertig, los geht's</button>
+      </div>
+    </div>
+
+    <!-- Mode switch confirmation (used later from settings) -->
+    <div class="ob-step" data-step="switch-confirm">
+      <div class="ob-eyebrow">Wechsel bestätigen</div>
+      <div class="ob-title" id="switch-confirm-title">Wechsel zum<br><em>echten Job</em>?</div>
+      <div class="ob-sub" id="switch-confirm-text">Deine Übungsdaten werden archiviert und aus dem Dashboard ausgeblendet. Sie gehen nicht verloren, du kannst sie aber nicht mehr im aktiven Dashboard sehen.</div>
+      <div class="ob-nav">
+        <button class="ob-btn ob-btn-text" onclick="cancelModeSwitch()">Abbrechen</button>
+        <button class="ob-btn ob-btn-primary" onclick="confirmModeSwitch()">Ja, wechseln</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ WEEKLY CHECK-UP ============ -->
+<div id="weekly-checkup">
+  <div class="wc-card">
+    <div class="wc-eyebrow">Weekly Check-up</div>
+    <div class="wc-title">Wie war deine Woche?</div>
+    <div class="wc-sub">Beantworte ehrlich, damit wir gemeinsam die Lücken identifizieren und direkt schließen können.</div>
+
+    <div class="wc-field">
+      <label>Datum</label>
+      <input type="date" class="ob-input" id="wc-date">
+    </div>
+
+    <div class="wc-field" id="wc-applications-field">
+      <label>Wie viele Bewerbungen hast du rausgeschickt? (nur falls relevant)</label>
+      <input type="number" class="ob-input" id="wc-applications" min="0" placeholder="optional">
+    </div>
+
+    <div class="wc-field">
+      <label>Wie viele KI-Übungscalls hast du diese Woche gemacht?</label>
+      <input type="number" class="ob-input" id="wc-ai-calls" min="0" placeholder="0">
+    </div>
+
+    <div class="divider"><div class="divider-line"></div><div class="divider-label">Wie sicher fühlst du dich</div><div class="divider-line"></div></div>
+
+    <div id="wc-skill-sliders"></div>
+
+    <div class="divider"><div class="divider-line"></div><div class="divider-label">Reflexion</div><div class="divider-line"></div></div>
+
+    <div class="wc-field">
+      <label>Was ist der größte Hebel für mich nächste Woche?</label>
+      <textarea class="ob-textarea" id="wc-lever" placeholder="..."></textarea>
+    </div>
+    <div class="wc-field">
+      <label>Woran möchte ich nächste Woche arbeiten?</label>
+      <textarea class="ob-textarea" id="wc-focus" placeholder="..."></textarea>
+    </div>
+    <div class="wc-field">
+      <label>Das sind meine Ziele nächste Woche:</label>
+      <textarea class="ob-textarea" id="wc-goals" placeholder="..."></textarea>
+    </div>
+    <div class="wc-field">
+      <label>Das war mein größtes Learning diese Woche:</label>
+      <textarea class="ob-textarea" id="wc-learning" placeholder="..."></textarea>
+    </div>
+    <div class="wc-field">
+      <label>Darauf bin ich richtig stolz:</label>
+      <textarea class="ob-textarea" id="wc-proud" placeholder="..."></textarea>
+    </div>
+
+    <button class="btn btn-primary btn-shine" style="width: 100%;" onclick="submitWeeklyCheckup()">Check-up abschicken</button>
+    <div class="wc-skip"><span onclick="dismissWeeklyCheckup()">Diese Woche überspringen</span></div>
+  </div>
+</div>
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="logo-wrap">
+      <div class="logo-eyebrow">Dein</div>
+      <div class="logo-name">Sales<br><em>Flow</em></div>
+      <div class="mode-badge" id="mode-badge">—</div>
+    </div>
+    <nav class="nav-section" id="nav-section"></nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-name" id="sidebar-name">—</div>
+      <div id="entry-count">0 Einträge</div>
+      <span class="settings-link" onclick="openSettings()">Profil bearbeiten</span>
+      <br>
+      <span class="settings-link" onclick="exportAllData()">Daten als Backup speichern</span>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ============ LOG: REAL MODE ============ -->
+    <div class="section" id="section-log-real">
+
+      <!-- Hero / start screen -->
+      <div id="log-hero" class="log-hero-screen">
+        <div class="hero-greet">
+          <div class="hero-greet-eyebrow" id="greet-time">Guten Tag</div>
+          <div class="hero-greet-title">Hallo <em id="greet-name-inline">du</em>,</div>
+          <div class="hero-greet-mode" id="greet-mode-line">du lernst Remote Sales.</div>
+          <div class="hero-greet-why" id="greet-why-line"></div>
+          <div class="hero-greet-sub">Trag hier deine täglichen Zahlen und Reflexionen ein, um dieses Ziel auf direktem Weg zu erreichen.</div>
+        </div>
+        <div class="log-hero-card">
+          <div class="log-hero-icon">✦</div>
+          <div class="log-hero-text">Zwei kurze Schritte. Deine Zahlen, dann deine Reflexion.</div>
+          <button class="btn btn-primary btn-shine" onclick="startDailyLog()">Let's go</button>
+        </div>
+      </div>
+
+      <!-- Step 1: numbers -->
+      <div id="log-step-numbers" class="log-step hidden">
+        <div class="hero-greet">
+          <div class="hero-greet-eyebrow">Schritt 1 von 2</div>
+          <div class="hero-greet-title">Deine <em>Zahlen</em></div>
+          <div class="hero-greet-sub">Du kannst mehrere Zeitblöcke loggen, wenn du über den Tag verteilt telefonierst.</div>
+        </div>
+
+        <div class="card" style="position: relative;" id="log-card">
+          <div class="shine-flash" id="shine-flash"></div>
+          <div class="date-row">
+            <label>Datum</label>
+            <input type="date" id="log-date" onchange="checkTimeblockOverlaps()">
+          </div>
+
+          <div id="timeblocks-wrap"></div>
+
+          <button class="btn-ghost-add" onclick="addTimeblock()" style="margin-bottom: 28px;">+ Weiteren Zeitblock hinzufügen</button>
+
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-primary btn-shine" onclick="goToReflectionStep()">Weiter zur Reflexion</button>
+            <button class="btn btn-secondary" onclick="cancelDailyLog()">Abbrechen</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: reflection flow -->
+      <div id="log-step-reflection" class="log-step hidden">
+        <div class="ob-card" id="reflection-card" style="margin: 0 auto; max-width: 600px;">
+
+          <div class="ob-step" data-rstep="vorsatz">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Dein Vorsatz von gestern</div>
+            <div class="ob-title">Hast du das <em>umgesetzt</em>,<br>was du dir vorgenommen hast?</div>
+            <div class="ob-sub" id="vorsatz-quote">"..."</div>
+            <div class="ob-choices" data-group="vorsatz">
+              <div class="ob-choice" data-val="Ja" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Ja</div>
+              <div class="ob-choice" data-val="Teilweise" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Teilweise</div>
+              <div class="ob-choice" data-val="Nein" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Nein</div>
+            </div>
+            <textarea class="ob-textarea" style="margin-top: 16px;" id="r-vorsatz-note" placeholder="Was hat es leicht oder schwer gemacht?"></textarea>
+            <div class="ob-nav"><span></span><button class="ob-btn ob-btn-primary" onclick="rNext()">Weiter</button></div>
+          </div>
+
+          <div class="ob-step active" data-rstep="energie">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Energie</div>
+            <div class="ob-title">Wie war deine <em>Energie</em><br>heute über den Tag verteilt?</div>
+            <div class="ob-choices" data-group="energie">
+              <div class="ob-choice" data-val="Hoch und stabil" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Hoch und stabil</div>
+              <div class="ob-choice" data-val="Schwankend" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Schwankend</div>
+              <div class="ob-choice" data-val="Eher niedrig" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Eher niedrig</div>
+            </div>
+            <textarea class="ob-textarea" style="margin-top: 16px;" id="r-energie-note" placeholder="Woran könnte das gelegen haben? Ernährung, Schlaf, Emotionen, Umfeld, Zyklus... Was kannst du morgen verändern?"></textarea>
+            <div class="ob-nav"><span></span><button class="ob-btn ob-btn-primary" onclick="rNext()">Weiter</button></div>
+          </div>
+
+          <div class="ob-step" data-rstep="laune">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Mindset</div>
+            <div class="ob-title">Wie war deine <em>Laune</em><br>und dein Mindset?</div>
+            <div class="ob-choices" data-group="laune">
+              <div class="ob-choice" data-val="Optimistisch & motiviert" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Optimistisch &amp; motiviert</div>
+              <div class="ob-choice" data-val="Neutral / durchwachsen" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Neutral / durchwachsen</div>
+              <div class="ob-choice" data-val="Zweifelnd / gereizt" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Zweifelnd / gereizt</div>
+            </div>
+            <textarea class="ob-textarea" style="margin-top: 16px;" id="r-laune-note" placeholder="Gab es Gedanken, die dich runtergezogen haben? Was hast du gebraucht und dir vielleicht nicht gegeben?"></textarea>
+            <div class="ob-nav"><button class="ob-btn ob-btn-text" onclick="rPrev()">Zurück</button><button class="ob-btn ob-btn-primary" onclick="rNext()">Weiter</button></div>
+          </div>
+
+          <div class="ob-step" data-rstep="pausen">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Pausen</div>
+            <div class="ob-title">Hast du genug<br><em>Pausen</em> gemacht?</div>
+            <div class="ob-choices" data-group="pausen">
+              <div class="ob-choice" data-val="Ja, bewusst & nährend" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Ja, bewusst &amp; nährend</div>
+              <div class="ob-choice" data-val="Irgendwie zwischendurch" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Irgendwie zwischendurch</div>
+              <div class="ob-choice" data-val="Nein, ich war durchgehend im Tun" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Nein, ich war durchgehend im Tun</div>
+            </div>
+            <textarea class="ob-textarea" style="margin-top: 16px;" id="r-pausen-note" placeholder="Wie haben sich deine Pausen angefühlt? Was brauchst du mehr?"></textarea>
+            <div class="ob-nav"><button class="ob-btn ob-btn-text" onclick="rPrev()">Zurück</button><button class="ob-btn ob-btn-primary" onclick="rNext()">Weiter</button></div>
+          </div>
+
+          <div class="ob-step" data-rstep="herausforderungen">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Umgang mit Herausforderungen</div>
+            <div class="ob-title">Wie bist du mit <em>Herausforderungen</em><br>umgegangen?</div>
+            <div class="ob-choices" data-group="herausforderungen">
+              <div class="ob-choice" data-val="Gelassen & lösungsorientiert" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Gelassen &amp; lösungsorientiert</div>
+              <div class="ob-choice" data-val="Emotional, aber reflektiert" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Emotional, aber reflektiert</div>
+              <div class="ob-choice" data-val="Getriggert / überfordert" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Ich habe mich getriggert gefühlt / überfordert</div>
+            </div>
+            <textarea class="ob-textarea" style="margin-top: 16px;" id="r-herausforderungen-note" placeholder="Was genau ist passiert? Wie willst du beim nächsten Mal reagieren?"></textarea>
+            <div class="ob-nav"><button class="ob-btn ob-btn-text" onclick="rPrev()">Zurück</button><button class="ob-btn ob-btn-primary" onclick="rNext()">Weiter</button></div>
+          </div>
+
+          <div class="ob-step" data-rstep="vorbereitung">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Vorbereitung</div>
+            <div class="ob-title">Warst du gut <em>vorbereitet</em><br>für Calls & Aufgaben?</div>
+            <div class="ob-choices" data-group="vorbereitung">
+              <div class="ob-choice" data-val="Präsent und ready" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Ich war präsent und ready</div>
+              <div class="ob-choice" data-val="Teils/teils, etwas gestresst" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Teils/teils, etwas gestresst</div>
+              <div class="ob-choice" data-val="Nicht ganz da / unstrukturiert" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Ich war nicht ganz da oder unstrukturiert</div>
+            </div>
+            <textarea class="ob-textarea" style="margin-top: 16px;" id="r-vorbereitung-note" placeholder="Was kannst du optimieren? Zeitplanung, Fokus, Vorbereitung..."></textarea>
+            <div class="ob-nav"><button class="ob-btn ob-btn-text" onclick="rPrev()">Zurück</button><button class="ob-btn ob-btn-primary" onclick="rNext()">Weiter</button></div>
+          </div>
+
+          <div class="ob-step" data-rstep="erfolge">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Erfolge feiern</div>
+            <div class="ob-title">Hast du dich über<br><em>Erfolge</em> richtig gefreut?</div>
+            <div class="ob-choices" data-group="erfolge">
+              <div class="ob-choice" data-val="Ja, ich hab's gefeiert" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Ja, ich hab's gefeiert 🎉</div>
+              <div class="ob-choice" data-val="Kurz registriert" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Ich hab's kurz registriert</div>
+              <div class="ob-choice" data-val="Nein, gleich weitergemacht" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Nein, gleich weitergemacht</div>
+            </div>
+            <textarea class="ob-textarea" style="margin-top: 16px;" id="r-erfolge-note" placeholder="Was hast du heute erreicht, das du würdigen darfst?"></textarea>
+            <div class="ob-nav"><button class="ob-btn ob-btn-text" onclick="rPrev()">Zurück</button><button class="ob-btn ob-btn-primary" onclick="rNext()">Weiter</button></div>
+          </div>
+
+          <div class="ob-step" data-rstep="nachbereitung">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Nachbereitung</div>
+            <div class="ob-title">Hast du direkt<br><em>nachbereitet</em>?</div>
+            <div class="ob-choices" data-group="nachbereitung">
+              <div class="ob-choice" data-val="Ja, Notizen & Learnings" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Ja, Notizen gemacht, Learnings festgehalten</div>
+              <div class="ob-choice" data-val="Teilweise" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Teilweise</div>
+              <div class="ob-choice" data-val="Nein, vergessen / keine Zeit" onclick="rSelectSingle(this)"><span class="ob-choice-dot"></span> Nein, vergessen oder keine Zeit</div>
+            </div>
+            <textarea class="ob-textarea" style="margin-top: 16px;" id="r-nachbereitung-note" placeholder="Wie kannst du Nachbereitung in deine Routine einbauen?"></textarea>
+            <div class="ob-nav"><button class="ob-btn ob-btn-text" onclick="rPrev()">Zurück</button><button class="ob-btn ob-btn-primary" onclick="rNext()">Weiter</button></div>
+          </div>
+
+          <div class="ob-step" data-rstep="abschluss">
+            <div class="ob-eyebrow">Schritt 2 von 2 · Abschlussimpuls</div>
+            <div class="ob-title">Was brauchst du<br>gerade <em>wirklich</em>?</div>
+            <div class="ob-sub">Ruhe? Verbindung? Inspiration? Stolz? Struktur?</div>
+            <textarea class="ob-textarea" id="r-brauche" placeholder="..."></textarea>
+            <div class="ob-sub" style="margin-top: 20px; margin-bottom: 8px;">Und was nimmst du dir für morgen mit?</div>
+            <textarea class="ob-textarea" id="r-morgen" placeholder="..."></textarea>
+            <div class="ob-nav"><button class="ob-btn ob-btn-text" onclick="rPrev()">Zurück</button><button class="ob-btn ob-btn-primary btn-shine" onclick="finishDailyLog()">Tag abschließen</button></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Success screen -->
+      <div id="log-success" class="log-success-screen hidden">
+        <div class="success-check-wrap">
+          <svg class="success-check-svg" viewBox="0 0 100 100">
+            <circle class="success-check-circle" cx="50" cy="50" r="46"/>
+            <path class="success-check-mark" d="M28 52 L43 67 L73 35"/>
+          </svg>
+        </div>
+        <div class="success-title">Täglicher Erfolg gespeichert.</div>
+        <div class="success-sub">Mach morgen genau so weiter.</div>
+      </div>
+
+    </div>
+
+
+    <!-- ============ LOG: PRACTICE MODE ============ -->
+    <div class="section" id="section-log-practice">
+      <div class="hero-greet">
+        <div class="hero-greet-eyebrow" id="greet-time-p">Guten Tag</div>
+        <div class="hero-greet-title">Hallo <em id="greet-name-p-inline">du</em>,</div>
+        <div class="hero-greet-mode" id="greet-mode-line-p">du lernst Remote Sales.</div>
+        <div class="hero-greet-sub">Trag hier deine täglichen Zahlen und Reflexionen ein, um dieses Ziel auf direktem Weg zu erreichen.</div>
+      </div>
+
+      <div class="card" style="position: relative;" id="practice-log-card">
+        <div class="shine-flash" id="shine-flash-p"></div>
+        <div class="date-row">
+          <label>Datum</label>
+          <input type="date" id="p-date">
+        </div>
+
+        <div class="divider"><div class="divider-line"></div><div class="divider-label">Mit wem geübt</div><div class="divider-line"></div></div>
+        <div class="partner-choices" id="partner-choices">
+          <div class="partner-choice" data-val="ki" onclick="selectPartner(this)"><span class="partner-icon">🤖</span>KI</div>
+          <div class="partner-choice" data-val="anna" onclick="selectPartner(this)"><span class="partner-icon">👩‍🏫</span>Anna</div>
+          <div class="partner-choice" data-val="freundin" onclick="selectPartner(this)"><span class="partner-icon">🤝</span>Freundin</div>
+        </div>
+
+        <div class="divider"><div class="divider-line"></div><div class="divider-label">Wie sicher hast du dich gefühlt</div><div class="divider-line"></div></div>
+        <div id="practice-skill-sliders"></div>
+
+        <div class="divider"><div class="divider-line"></div><div class="divider-label">Reflexion</div><div class="divider-line"></div></div>
+        <div class="form-grid" style="margin-bottom: 32px;">
+          <div class="field">
+            <label>Was lief gut?</label>
+            <textarea id="p-gut" placeholder="Dein Fortschritt heute..."></textarea>
+          </div>
+          <div class="field">
+            <label>Was übst du morgen gezielt?</label>
+            <textarea id="p-besser" placeholder="Eine konkrete Sache..."></textarea>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-primary btn-shine" onclick="savePracticeEntry()">Session speichern</button>
+          <button class="btn btn-secondary" onclick="resetPracticeForm()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ DASHBOARD: REAL MODE ============ -->
+    <div class="section" id="section-dashboard-real">
+      <div class="hero-greet">
+        <div class="hero-greet-eyebrow" id="dash-greet-time">Dein Stand heute</div>
+        <div class="hero-greet-title" id="dash-greet-name">Hey <em>du</em>.</div>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-mark">"</div>
+        <div class="quote-text" id="quote-text">Lade...</div>
+        <div class="quote-author" id="quote-author"></div>
+      </div>
+
+      <div class="goal-card">
+        <div class="goal-top">
+          <span class="goal-label">Umsatzziel diesen Monat</span>
+          <span class="goal-nums"><strong id="goal-current">€ 0</strong> / € <span id="goal-target">0</span></span>
+        </div>
+        <div class="goal-bar-bg"><div class="goal-bar-fill" id="goal-bar-fill" style="width:0%;"></div></div>
+        <div class="goal-note" id="goal-note">Jeder Eintrag bringt dich näher.</div>
+      </div>
+
+      <div class="bottleneck-card">
+        <div class="bottleneck-eyebrow">Dein Engpass</div>
+        <div class="bottleneck-main">
+          <span class="bottleneck-name" id="bottleneck-name">—</span>
+          <span class="bottleneck-value" id="bottleneck-value">—</span>
+        </div>
+        <div class="bottleneck-next" id="bottleneck-next">Trag ein paar Tage Daten ein, damit wir deinen Engpass finden.</div>
+      </div>
+
+      <div class="mini-row">
+        <div class="mini-card">
+          <div class="mini-icon">🔥</div>
+          <div><div class="mini-val" id="streak-val">0</div><div class="mini-label">Tage Streak</div></div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-icon">👑</div>
+          <div><div class="mini-val" id="level-val">Level 1</div><div class="mini-label" id="level-label">Erste Schritte</div></div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Show-up Rate</div><div class="stat-value" id="d-showup">0%</div><div class="stat-sub">Erreicht / Angerufen</div><div id="p-showup"></div></div>
+        <div class="stat-card"><div class="stat-label">Pain Rate</div><div class="stat-value" id="d-pain">0%</div><div class="stat-sub">Pain / Erreicht</div><div id="p-pain"></div></div>
+        <div class="stat-card"><div class="stat-label">Set Rate</div><div class="stat-value" id="d-set">0%</div><div class="stat-sub">Gesetzt / Pain</div><div id="p-set"></div></div>
+        <div class="stat-card"><div class="stat-label">Close Rate</div><div class="stat-value" id="d-close">0%</div><div class="stat-sub">Closed / Gesetzt</div><div id="p-close"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Deine beste Anruf-Zeit</div>
+        <div id="best-window"><div class="empty"><div class="empty-icon">✦</div>Noch keine Zeitfenster-Daten</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Gesamtzahlen</div>
+          <div>
+            <div class="summary-row"><span class="summary-key">Angerufen</span><span class="summary-val" id="t-angerufen">0</span></div>
+            <div class="summary-row"><span class="summary-key">Erreicht</span><span class="summary-val" id="t-erreicht">0</span></div>
+            <div class="summary-row"><span class="summary-key">Pain Gespräche</span><span class="summary-val" id="t-pain">0</span></div>
+            <div class="summary-row"><span class="summary-key">Termine gesetzt</span><span class="summary-val" id="t-gesetzt">0</span></div>
+            <div class="summary-row"><span class="summary-key">Geclosed</span><span class="summary-val" id="t-closed">0</span></div>
+            <div class="summary-row"><span class="summary-key">Umsatz</span><span class="summary-val big" id="t-umsatz">€ 0</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">7-Tage-Verlauf</div>
+          <div id="mini-chart"><div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Diese Woche vs. letzte Woche</div>
+        <div id="week-compare"><div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Dein Warum</div>
+        <div class="why-card">
+          <div class="why-label">Wenn es schwer wird</div>
+          <div class="why-text" id="why-display">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Alle Conversion-Rates</div>
+        <div class="rates-grid" id="rates-grid"></div>
+      </div>
+    </div>
+
+    <!-- ============ DASHBOARD: PRACTICE MODE ============ -->
+    <div class="section" id="section-dashboard-practice">
+      <div class="hero-greet">
+        <div class="hero-greet-eyebrow" id="dash-greet-time-p">Dein Stand</div>
+        <div class="hero-greet-title" id="dash-greet-name-p">Hey <em>du</em>.</div>
+        <div class="hero-greet-sub">Im Übungsmodus zählt nur eins: dass du dranbleibst.</div>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-mark">"</div>
+        <div class="quote-text" id="quote-text-p">Lade...</div>
+        <div class="quote-author" id="quote-author-p"></div>
+      </div>
+
+      <div class="mini-row three">
+        <div class="mini-card">
+          <div class="mini-icon">🔥</div>
+          <div><div class="mini-val" id="p-streak-val">0</div><div class="mini-label">Tage Streak</div></div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-icon">🎯</div>
+          <div><div class="mini-val" id="p-session-count">0</div><div class="mini-label">Sessions gesamt</div></div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-icon">📅</div>
+          <div><div class="mini-val" id="p-days-practiced">0</div><div class="mini-label">Tage geübt</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Diese Woche</div>
+        <div class="goal-top" style="margin-bottom: 16px;">
+          <span class="goal-label">Sessions diese Woche</span>
+          <span class="goal-nums"><strong id="p-week-current">0</strong> / <span id="p-week-target">0</span></span>
+        </div>
+        <div class="goal-bar-bg"><div class="goal-bar-fill" id="p-week-bar-fill" style="width:0%;"></div></div>
+        <div class="goal-note" id="p-week-note">Jede Session bringt dich näher an deine Sicherheit.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sessions pro Übungspartner</div>
+        <div class="partner-stat-row" id="partner-stat-row"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">7-Tage-Verlauf</div>
+        <div id="practice-mini-chart"><div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Dein Warum</div>
+        <div class="why-card">
+          <div class="why-label">Wenn es schwer wird</div>
+          <div class="why-text" id="why-display-p">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ FUNNEL (REAL MODE) ============ -->
+    <div class="section" id="section-funnel">
+      <div class="hero-greet">
+        <div class="hero-greet-eyebrow">Analyse</div>
+        <div class="hero-greet-title">Dein Sales <em>Funnel</em></div>
+        <div class="hero-greet-sub">Wo verlierst du Menschen. Wo gewinnst du sie.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Gesamt-Funnel</div>
+        <div class="funnel-wrap" id="funnel-vis"><div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Was du brauchst für 1 Deal</div>
+        <div id="deal-math" style="font-size: 13px; color: var(--brown-soft);">Noch nicht genug Daten.</div>
+      </div>
+    </div>
+
+    <!-- ============ SKILLS (PRACTICE MODE) ============ -->
+    <div class="section" id="section-skills">
+      <div class="hero-greet">
+        <div class="hero-greet-eyebrow">Analyse</div>
+        <div class="hero-greet-title">Deine <em>Skills</em></div>
+        <div class="hero-greet-sub">Fortschritt pro Fähigkeit über Zeit. Vergleich erste 3 Sessions vs. letzte 3 Sessions.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Skill-Fortschritt</div>
+        <div id="skill-progress-list"><div class="empty"><div class="empty-icon">✦</div>Noch keine Sessions geloggt</div></div>
+      </div>
+    </div>
+
+    <!-- ============ HISTORY (shared, content swapped) ============ -->
+    <div class="section" id="section-history">
+      <div class="hero-greet">
+        <div class="hero-greet-eyebrow">Archiv</div>
+        <div class="hero-greet-title">Alle <em>Einträge</em></div>
+        <div class="hero-greet-sub" id="history-sub">Jeder Eintrag entspricht einem Zeitblock.</div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table id="history-table">
+            <thead id="history-thead"></thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ INSIGHTS (REAL MODE) ============ -->
+    <div class="section" id="section-insights">
+      <div class="hero-greet">
+        <div class="hero-greet-eyebrow">Analyse</div>
+        <div class="hero-greet-title"><em>Insights</em></div>
+        <div class="hero-greet-sub">Was deine Zahlen wirklich sagen.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Stärken und Schwachstellen</div>
+        <div class="insight-list" id="insight-list"><div class="empty"><div class="empty-icon">✦</div>Mehr Einträge nötig</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Bester vs. Schwächster Tag</div>
+        <div id="best-worst"><div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div></div>
+      </div>
+    </div>
+
+    <!-- ============ WEEKLY CHECK-UPS ARCHIVE ============ -->
+    <div class="section" id="section-weekly">
+      <div class="hero-greet">
+        <div class="hero-greet-eyebrow">Archiv</div>
+        <div class="hero-greet-title">Deine <em>Check-ups</em></div>
+        <div class="hero-greet-sub">Jeden Freitag ein kurzer Rückblick. Hier siehst du alle gespeicherten.</div>
+      </div>
+      <div id="weekly-archive-list"><div class="empty"><div class="empty-icon">✦</div>Noch kein Check-up ausgefüllt</div></div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+/* ===================== CONSTANTS ===================== */
+const SKILL_KEYS = [
+  { key: 'problembewusstsein', label: 'Problembewusstsein' },
+  { key: 'preispitch', label: 'Preispitch' },
+  { key: 'einwandbehandlung', label: 'Einwandbehandlung' },
+  { key: 'einstieg', label: 'Einstieg' },
+  { key: 'selbstsicherheit', label: 'Selbstsicherheit im Gespräch' },
+  { key: 'fragenstellen', label: 'Fragen stellen' },
+  { key: 'setting', label: 'Setting' },
+  { key: 'closing', label: 'Closing' },
+  { key: 'fuehrung', label: 'Führung' },
+];
+
+const PARTNER_LABELS = { ki: 'KI', anna: 'Anna', freundin: 'Freundin' };
+const PARTNER_ICONS = { ki: '🤖', anna: '👩‍🏫', freundin: '🤝' };
+
+/* ===================== DATA ===================== */
+let data = JSON.parse(localStorage.getItem('st_entries') || '[]');             // real mode entries
+let reflections = JSON.parse(localStorage.getItem('st_reflections') || '[]');  // daily reflections, one per date
+let practiceData = JSON.parse(localStorage.getItem('st_practice') || '[]');    // practice sessions
+let practiceArchive = JSON.parse(localStorage.getItem('st_practice_archive') || '[]'); // archived on switch
+let weeklyCheckups = JSON.parse(localStorage.getItem('st_weekly') || '[]');
+let profile = JSON.parse(localStorage.getItem('st_profile') || 'null');
+let tbCounter = 0;
+let selectedPartner = null;
+
+function saveData() { localStorage.setItem('st_entries', JSON.stringify(data)); }
+function saveReflections() { localStorage.setItem('st_reflections', JSON.stringify(reflections)); }
+function savePracticeData() { localStorage.setItem('st_practice', JSON.stringify(practiceData)); }
+function savePracticeArchive() { localStorage.setItem('st_practice_archive', JSON.stringify(practiceArchive)); }
+function saveWeekly() { localStorage.setItem('st_weekly', JSON.stringify(weeklyCheckups)); }
+function saveProfile() { localStorage.setItem('st_profile', JSON.stringify(profile)); }
+
+/* ===================== ONBOARDING ===================== */
+let obCurrentStep = 0;
+let obStepOrder = ['0','1','2'];
+let obLevel = null;
+let obMode = null;
+let isSettingsEdit = false;
+let pendingModeSwitch = null;
+
+function obBuildStepOrder() {
+  // step order depends on chosen mode
+  if (obMode === 'practice') {
+    obStepOrder = ['0','1','2','3b','5','6'];
+  } else if (obMode === 'real') {
+    obStepOrder = ['0','1','2','3a','4a','5','6'];
+  } else {
+    obStepOrder = ['0','1','2'];
+  }
+}
+
+function whyVerbPhrase(mode) {
+  return mode === 'real' ? 'Ich arbeite im Remote Sales, um' : 'Ich lerne Remote Sales, um';
+}
+
+/* Transforms a first-person (Ich/mir/mein...) sentence into second-person address (Du/dir/dein...)
+   so the user's own onboarding answer reads naturally on the "Hallo [Name]," greeting screen. */
+function toDuForm(sentence) {
+  if (!sentence) return sentence;
+
+  const replacements = [
+    [/\bIch\b/g, 'Du'],
+    [/\bich\b/g, 'du'],
+    [/\bmir\b/g, 'dir'],
+    [/\bmich\b/g, 'dich'],
+    [/\bmeine\b/g, 'deine'],
+    [/\bmeinen\b/g, 'deinen'],
+    [/\bmeinem\b/g, 'deinem'],
+    [/\bmeiner\b/g, 'deiner'],
+    [/\bmein\b/g, 'dein'],
+    [/\barbeite\b/g, 'arbeitest'],
+    [/\blerne\b/g, 'lernst'],
+    [/\bmache\b/g, 'machst'],
+    [/\bwünsche\b/g, 'wünschst'],
+    [/\bmöchte\b/g, 'möchtest'],
+    [/\bwerde\b/g, 'wirst'],
+    [/\blebe\b/g, 'lebst'],
+    [/\bbaue\b/g, 'baust'],
+    [/\bschaffe\b/g, 'schaffst'],
+    [/\bverdiene\b/g, 'verdienst'],
+    [/\berreiche\b/g, 'erreichst'],
+    [/\bzeige\b/g, 'zeigst'],
+    [/\bbringe\b/g, 'bringst'],
+    [/\bhelfe\b/g, 'hilfst'],
+    [/\bgebe\b/g, 'gibst'],
+    [/\bsehe\b/g, 'siehst'],
+    [/\bführe\b/g, 'führst'],
+    [/\bwill\b/g, 'willst'],
+    [/\bkann\b/g, 'kannst'],
+    [/\bbin\b/g, 'bist'],
+    [/\bhabe\b/g, 'hast'],
+  ];
+
+  let result = sentence;
+  replacements.forEach(([pattern, replacement]) => { result = result.replace(pattern, replacement); });
+  return result;
+}
+
+function obShowStepByKey(key) {
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('active'));
+  const el = document.querySelector(`.ob-step[data-step="${key}"]`);
+  if (el) el.classList.add('active');
+  obCurrentStep = obStepOrder.indexOf(key);
+
+  if (key === '5') {
+    const prefixEl = document.getElementById('ob-why-prefix-display');
+    if (prefixEl) prefixEl.textContent = `Vervollständige den Satz: "${whyVerbPhrase(obMode)}..."`;
+  }
+}
+
+function obNext() {
+  const curKey = obStepOrder[obCurrentStep] || '0';
+
+  if (curKey === '1' && !document.getElementById('ob-name').value.trim()) { shakeField('ob-name'); return; }
+  if (curKey === '2') {
+    if (!obMode) { return; } // must pick a mode, choice click already enables next visually
+    obBuildStepOrder();
+  }
+  if (curKey === '3a' && !document.getElementById('ob-revenue').value) { shakeField('ob-revenue'); return; }
+  if (curKey === '4a' && !document.getElementById('ob-calls').value) { shakeField('ob-calls'); return; }
+  if (curKey === '3b' && !document.getElementById('ob-sessions').value) { shakeField('ob-sessions'); return; }
+
+  const nextIdx = obCurrentStep + 1;
+  if (nextIdx < obStepOrder.length) {
+    obShowStepByKey(obStepOrder[nextIdx]);
+  }
+}
+
+function obPrev() {
+  const prevIdx = obCurrentStep - 1;
+  if (prevIdx >= 0) obShowStepByKey(obStepOrder[prevIdx]);
+}
+
+function shakeField(id) {
+  const el = document.getElementById(id);
+  el.style.borderColor = '#c1693f';
+  el.focus();
+  setTimeout(() => el.style.borderColor = '', 1200);
+}
+
+function obSelectMode(el) {
+  document.querySelectorAll('#ob-mode-choices .ob-choice').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  obMode = el.dataset.val;
+  obBuildStepOrder();
+}
+
+function obSelectLevel(el) {
+  document.querySelectorAll('#ob-level-choices .ob-choice').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  obLevel = el.dataset.val;
+}
+
+function obFinish() {
+  if (!obLevel) obLevel = 'fortgeschritten';
+  if (!obMode) obMode = 'real';
+
+  const wasEditing = isSettingsEdit;
+  const previousMode = profile ? profile.mode : null;
+
+  const whyEnding = document.getElementById('ob-why').value.trim();
+  const whyFull = whyEnding ? `${whyVerbPhrase(obMode)} ${whyEnding}` : '';
+
+  profile = {
+    name: document.getElementById('ob-name').value.trim() || 'Du',
+    mode: obMode,
+    revenueTarget: parseInt(document.getElementById('ob-revenue').value) || (profile ? profile.revenueTarget : 10000) || 10000,
+    dailyCallGoal: parseInt(document.getElementById('ob-calls').value) || (profile ? profile.dailyCallGoal : 10) || 10,
+    weeklySessionGoal: parseInt(document.getElementById('ob-sessions').value) || (profile ? profile.weeklySessionGoal : 5) || 5,
+    whyEnding: whyEnding,
+    why: whyFull,
+    level: obLevel,
+    streak: profile ? (profile.streak || 0) : 0,
+    lastEntryDate: profile ? profile.lastEntryDate : null,
+    practiceStreak: profile ? (profile.practiceStreak || 0) : 0,
+    lastPracticeDate: profile ? profile.lastPracticeDate : null,
+    lastWeeklyCheckup: profile ? profile.lastWeeklyCheckup : null,
+  };
+
+  // if switching from practice to real, archive practice data
+  if (wasEditing && previousMode === 'practice' && obMode === 'real' && practiceData.length) {
+    practiceArchive = practiceArchive.concat(practiceData);
+    practiceData = [];
+    savePracticeArchive();
+    savePracticeData();
+    showToast('Übungsdaten archiviert. Willkommen im echten Job!');
+  }
+
+  saveProfile();
+  document.getElementById('onboarding').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  isSettingsEdit = false;
+  initApp();
+}
+
+function openSettings() {
+  isSettingsEdit = true;
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('onboarding').classList.remove('hidden');
+  document.getElementById('ob-name').value = profile.name || '';
+  document.getElementById('ob-revenue').value = profile.revenueTarget || '';
+  document.getElementById('ob-calls').value = profile.dailyCallGoal || '';
+  document.getElementById('ob-sessions').value = profile.weeklySessionGoal || '';
+  document.getElementById('ob-why').value = profile.whyEnding || '';
+  document.querySelectorAll('#ob-level-choices .ob-choice').forEach(c => {
+    c.classList.toggle('selected', c.dataset.val === profile.level);
+  });
+  document.querySelectorAll('#ob-mode-choices .ob-choice').forEach(c => {
+    c.classList.toggle('selected', c.dataset.val === profile.mode);
+  });
+  obLevel = profile.level;
+  obMode = profile.mode;
+  obBuildStepOrder();
+  obShowStepByKey('0');
+}
+
+/* Mode switch confirmation flow, triggered from settings step 2 if mode actually changes */
+function obAttemptModeChangeFromSettings(newMode) {
+  if (!isSettingsEdit) return false;
+  if (profile && profile.mode === 'practice' && newMode === 'real') {
+    pendingModeSwitch = newMode;
+    document.getElementById('switch-confirm-title').innerHTML = 'Wechsel zum<br><em>echten Job</em>?';
+    document.getElementById('switch-confirm-text').textContent = 'Deine Übungsdaten werden archiviert und aus dem aktiven Dashboard ausgeblendet. Sie gehen nicht verloren.';
+    obShowStepByKey('switch-confirm');
+    return true;
+  }
+  return false;
+}
+
+function cancelModeSwitch() {
+  pendingModeSwitch = null;
+  document.querySelectorAll('#ob-mode-choices .ob-choice').forEach(c => c.classList.toggle('selected', c.dataset.val === obMode));
+  obShowStepByKey('2');
+}
+
+function confirmModeSwitch() {
+  obMode = pendingModeSwitch;
+  pendingModeSwitch = null;
+  document.querySelectorAll('#ob-mode-choices .ob-choice').forEach(c => c.classList.toggle('selected', c.dataset.val === obMode));
+  obBuildStepOrder();
+  // The confirm dialog isn't part of obStepOrder, so obCurrentStep is invalid here.
+  // Explicitly resume as if we just completed step '2' (the mode question).
+  obCurrentStep = obStepOrder.indexOf('2');
+  obNext();
+}
+
+/* override obSelectMode behavior slightly when in settings to trigger confirm dialog */
+const _origObSelectMode = obSelectMode;
+obSelectMode = function(el) {
+  const newMode = el.dataset.val;
+  if (isSettingsEdit && profile && profile.mode === 'practice' && newMode === 'real') {
+    document.querySelectorAll('#ob-mode-choices .ob-choice').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    pendingModeSwitch = newMode;
+    document.getElementById('switch-confirm-title').innerHTML = 'Wechsel zum<br><em>echten Job</em>?';
+    document.getElementById('switch-confirm-text').textContent = 'Deine Übungsdaten werden archiviert und aus dem aktiven Dashboard ausgeblendet. Sie gehen nicht verloren.';
+    obShowStepByKey('switch-confirm');
+    return;
+  }
+  _origObSelectMode(el);
+};
+
+/* ===================== QUOTES ===================== */
+const quotes = [
+  { text: "Erfolg ist nichts anderes als ein paar einfache Disziplinen, jeden Tag wiederholt.", author: "Jim Rohn" },
+  { text: "Verkaufen ist nichts anderes als helfen. Du gibst Menschen die Lösung, die sie brauchen.", author: "Anna Meinert" },
+  { text: "Dein Einkommen wächst nur, wenn du selbst wächst.", author: "Grant Cardone" },
+  { text: "Die Menschen kaufen keine Produkte. Sie kaufen bessere Versionen von sich selbst.", author: "Zig Ziglar" },
+  { text: "Ein Nein ist nicht das Ende des Gesprächs. Es ist der Anfang der echten Arbeit.", author: "Jordan Belfort" },
+  { text: "Du musst nicht laut sein, um gehört zu werden. Du musst klar sein.", author: "Anna Meinert" },
+  { text: "Disziplin schlägt Motivation. Jeden Tag.", author: "Grant Cardone" },
+  { text: "Verkaufen mit Druck endet bei einem Kunden. Verkaufen mit Klarheit endet bei zehn.", author: "Anna Meinert" },
+];
+
+const practiceQuotes = [
+  { text: "Du musst nicht perfekt klingen. Du musst nur wieder ans Telefon gehen.", author: "Anna Meinert" },
+  { text: "Übung schlägt Talent, wenn Talent nicht übt.", author: "Tim Notke" },
+  { text: "Jede Session, die sich unangenehm anfühlt, ist die, die dich am meisten weiterbringt.", author: "Anna Meinert" },
+  { text: "Wiederholung ist die Mutter aller Fähigkeiten.", author: "Tony Robbins" },
+  { text: "Du wirst nicht im Kopf sicher. Du wirst sicher, indem du redest.", author: "Anna Meinert" },
+];
+
+function showRandomQuote() {
+  if (!document.getElementById('quote-text')) return;
+  const q = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById('quote-text').textContent = q.text;
+  document.getElementById('quote-author').textContent = '— ' + q.author;
+}
+
+function showRandomPracticeQuote() {
+  if (!document.getElementById('quote-text-p')) return;
+  const q = practiceQuotes[Math.floor(Math.random() * practiceQuotes.length)];
+  document.getElementById('quote-text-p').textContent = q.text;
+  document.getElementById('quote-author-p').textContent = '— ' + q.author;
+}
+
+/* ===================== HELPERS ===================== */
+function pct(a, b) { return b > 0 ? Math.round((a / b) * 100) : 0; }
+function pillClass(p) { return p >= 60 ? 'pill-strong' : p >= 30 ? 'pill-mid' : 'pill-weak'; }
+function pillText(p) { return p >= 60 ? 'Stark' : p >= 30 ? 'Solide' : 'Ausbaufähig'; }
+
+function totals() {
+  return data.reduce((acc, e) => {
+    acc.angerufen += e.angerufen; acc.erreicht += e.erreicht;
+    acc.pain += e.pain; acc.gesetzt += e.gesetzt;
+    acc.closed += e.closed; acc.umsatz += e.umsatz;
+    return acc;
+  }, { angerufen:0, erreicht:0, pain:0, gesetzt:0, closed:0, umsatz:0 });
+}
+
+function timeToMinutes(t) {
+  if (!t) return null;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function isoWeekStart(d) {
+  const date = new Date(d);
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(date.setDate(diff));
+  monday.setHours(0,0,0,0);
+  return monday;
+}
+/* ===================== REAL MODE: TIMEBLOCKS ===================== */
+function timeblockTemplate(id) {
+  return `
+  <div class="timeblock" id="tb-${id}" data-tbid="${id}">
+    <div class="timeblock-header">
+      <span class="timeblock-title">Zeitblock</span>
+      <button class="timeblock-remove" onclick="removeTimeblock(${id})">Entfernen</button>
+    </div>
+    <div class="timerange-row">
+      <div class="field"><label>Von</label><input type="time" class="tb-from" value="09:00" oninput="checkTimeblockOverlaps()"></div>
+      <div class="field"><label>Bis</label><input type="time" class="tb-to" value="11:00" oninput="checkTimeblockOverlaps()"></div>
+    </div>
+    <div class="tb-error-msg" id="tb-error-${id}"></div>
+
+    <div class="divider" style="margin: 18px 0 12px;"><div class="divider-line"></div><div class="divider-label">Anrufe</div><div class="divider-line"></div></div>
+    <div class="timeblock-grid" style="margin-bottom: 14px;">
+      <div class="field">
+        <label>Angerufen</label>
+        <div class="number-input-wrap">
+          <input type="number" class="tb-angerufen" min="0" value="0" oninput="updateDailyGoalBar()">
+          <div class="num-btns"><button class="num-btn" onclick="tbAdj(${id},'angerufen',-1,this)">−</button><button class="num-btn" onclick="tbAdj(${id},'angerufen',1,this)">+</button></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Erreicht</label>
+        <div class="number-input-wrap">
+          <input type="number" class="tb-erreicht" min="0" value="0" oninput="capField(this, 'tb-angerufen', ${id})">
+          <div class="num-btns"><button class="num-btn" onclick="tbAdj(${id},'erreicht',-1,this)">−</button><button class="num-btn" onclick="tbAdj(${id},'erreicht',1,this)">+</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin: 18px 0 12px;"><div class="divider-line"></div><div class="divider-label">Gespräche</div><div class="divider-line"></div></div>
+    <div class="timeblock-grid">
+      <div class="field">
+        <label>In den Pain gegangen</label>
+        <div class="number-input-wrap">
+          <input type="number" class="tb-pain" min="0" value="0" oninput="capField(this, 'tb-erreicht', ${id})">
+          <div class="num-btns"><button class="num-btn" onclick="tbAdj(${id},'pain',-1,this)">−</button><button class="num-btn" onclick="tbAdj(${id},'pain',1,this)">+</button></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Gesetzt (Termine)</label>
+        <div class="number-input-wrap">
+          <input type="number" class="tb-gesetzt" min="0" value="0">
+          <div class="num-btns"><button class="num-btn" onclick="tbAdj(${id},'gesetzt',-1,this)">−</button><button class="num-btn" onclick="tbAdj(${id},'gesetzt',1,this)">+</button></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Geclosed</label>
+        <div class="number-input-wrap">
+          <input type="number" class="tb-closed" min="0" value="0">
+          <div class="num-btns"><button class="num-btn" onclick="tbAdj(${id},'closed',-1,this)">−</button><button class="num-btn" onclick="tbAdj(${id},'closed',1,this)">+</button></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Umsatz (EUR)</label>
+        <div class="number-input-wrap">
+          <input type="number" class="tb-umsatz" min="0" value="0">
+          <div class="num-btns"><button class="num-btn" onclick="tbAdj(${id},'umsatz',-100,this)">−</button><button class="num-btn" onclick="tbAdj(${id},'umsatz',100,this)">+</button></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function addTimeblock(presetFrom, presetTo) {
+  tbCounter++;
+  const wrap = document.getElementById('timeblocks-wrap');
+  wrap.insertAdjacentHTML('beforeend', timeblockTemplate(tbCounter));
+  if (presetFrom) document.querySelector(`#tb-${tbCounter} .tb-from`).value = presetFrom;
+  if (presetTo) document.querySelector(`#tb-${tbCounter} .tb-to`).value = presetTo;
+  checkTimeblockOverlaps();
+  return tbCounter;
+}
+
+function removeTimeblock(id) {
+  const el = document.getElementById('tb-' + id);
+  if (el) el.remove();
+  if (!document.getElementById('timeblocks-wrap').children.length) addTimeblock();
+  updateDailyGoalBar();
+  checkTimeblockOverlaps();
+}
+
+function capField(el, capFieldClass, blockId) {
+  const capEl = document.querySelector(`#tb-${blockId} .${capFieldClass}`);
+  const capVal = parseInt(capEl ? capEl.value : 0) || 0;
+  const val = parseInt(el.value) || 0;
+  if (val > capVal) {
+    el.value = capVal;
+    el.style.borderColor = '#c1693f';
+    setTimeout(() => el.style.borderColor = '', 900);
+  }
+  if (capFieldClass === 'tb-angerufen') {
+    // erreicht changed, cascade cap to pain
+    const painEl = document.querySelector(`#tb-${blockId} .tb-pain`);
+    if (painEl && (parseInt(painEl.value)||0) > (parseInt(el.value)||0)) {
+      painEl.value = el.value;
+    }
+  }
+}
+
+function tbAdj(id, field, delta, btn) {
+  const el = document.querySelector(`#tb-${id} .tb-${field}`);
+  let newVal = Math.max(0, (parseInt(el.value) || 0) + delta);
+
+  if (field === 'erreicht') {
+    const angerufenVal = parseInt(document.querySelector(`#tb-${id} .tb-angerufen`)?.value) || 0;
+    newVal = Math.min(newVal, angerufenVal);
+  }
+  if (field === 'pain') {
+    const erreichtVal = parseInt(document.querySelector(`#tb-${id} .tb-erreicht`)?.value) || 0;
+    newVal = Math.min(newVal, erreichtVal);
+  }
+  if (field === 'angerufen' && delta < 0) {
+    // shrinking angerufen below erreicht/pain cascades down
+    const erreichtEl = document.querySelector(`#tb-${id} .tb-erreicht`);
+    const painEl = document.querySelector(`#tb-${id} .tb-pain`);
+    if (erreichtEl && (parseInt(erreichtEl.value)||0) > newVal) erreichtEl.value = newVal;
+    if (painEl && erreichtEl && (parseInt(painEl.value)||0) > (parseInt(erreichtEl.value)||0)) painEl.value = erreichtEl.value;
+  }
+
+  el.value = newVal;
+  if (btn) { btn.classList.remove('bump'); requestAnimationFrame(() => btn.classList.add('bump')); }
+  if (field === 'angerufen') updateDailyGoalBar();
+}
+
+function updateDailyGoalBar() {
+  if (!profile) return;
+  let totalCalls = 0;
+  document.querySelectorAll('.tb-angerufen').forEach(el => totalCalls += parseInt(el.value) || 0);
+  const goal = profile.dailyCallGoal || 10;
+  const p = Math.min(100, pct(totalCalls, goal));
+  const fill = document.getElementById('daily-goal-fill');
+  const txt = document.getElementById('daily-goal-text');
+  if (fill) fill.style.width = p + '%';
+  if (txt) txt.textContent = `${totalCalls} von ${goal} Calls heute`;
+}
+
+function timeRangesOverlap(aFrom, aTo, bFrom, bTo) {
+  const af = timeToMinutes(aFrom), at = timeToMinutes(aTo);
+  const bf = timeToMinutes(bFrom), bt = timeToMinutes(bTo);
+  if (af === null || at === null || bf === null || bt === null) return false;
+  return af < bt && bf < at;
+}
+
+function checkTimeblockOverlaps() {
+  const date = document.getElementById('log-date').value;
+  const blocks = Array.from(document.querySelectorAll('#timeblocks-wrap .timeblock'));
+  const existing = date ? data.filter(e => e.date === date && e.timeFrom) : [];
+
+  blocks.forEach(b => {
+    b.classList.remove('tb-error');
+    const msg = b.querySelector('.tb-error-msg');
+    msg.classList.remove('show');
+    msg.textContent = '';
+  });
+
+  blocks.forEach((b, i) => {
+    const from = b.querySelector('.tb-from').value;
+    const to = b.querySelector('.tb-to').value;
+    const msg = b.querySelector('.tb-error-msg');
+
+    if (timeToMinutes(from) !== null && timeToMinutes(to) !== null && timeToMinutes(from) >= timeToMinutes(to)) {
+      b.classList.add('tb-error');
+      msg.textContent = 'Die "Bis"-Zeit muss nach der "Von"-Zeit liegen.';
+      msg.classList.add('show');
+      return;
+    }
+
+    for (let j = 0; j < blocks.length; j++) {
+      if (j === i) continue;
+      const other = blocks[j];
+      const oFrom = other.querySelector('.tb-from').value;
+      const oTo = other.querySelector('.tb-to').value;
+      if (timeRangesOverlap(from, to, oFrom, oTo)) {
+        b.classList.add('tb-error');
+        msg.textContent = `Überlappt mit Block ${oFrom}–${oTo}.`;
+        msg.classList.add('show');
+        return;
+      }
+    }
+
+    for (const e of existing) {
+      if (timeRangesOverlap(from, to, e.timeFrom, e.timeTo)) {
+        b.classList.add('tb-error');
+        msg.textContent = `Überlappt mit gespeichertem Eintrag ${e.timeFrom}–${e.timeTo}.`;
+        msg.classList.add('show');
+        return;
+      }
+    }
+  });
+}
+
+function validateTimeblocks(date) {
+  const blocks = Array.from(document.querySelectorAll('#timeblocks-wrap .timeblock'));
+  const ranges = blocks.map(b => ({ from: b.querySelector('.tb-from').value, to: b.querySelector('.tb-to').value, el: b }));
+
+  for (const r of ranges) {
+    if (timeToMinutes(r.from) === null || timeToMinutes(r.to) === null) continue;
+    if (timeToMinutes(r.from) >= timeToMinutes(r.to)) {
+      return { ok: false, message: 'Die "Bis"-Zeit muss nach der "Von"-Zeit liegen.', el: r.el };
+    }
+  }
+
+  for (const b of blocks) {
+    const angerufen = parseInt(b.querySelector('.tb-angerufen').value) || 0;
+    const erreicht = parseInt(b.querySelector('.tb-erreicht').value) || 0;
+    const pain = parseInt(b.querySelector('.tb-pain').value) || 0;
+    if (erreicht > angerufen) {
+      return { ok: false, message: 'Erreicht kann nicht größer sein als Angerufen.', el: b };
+    }
+    if (pain > erreicht) {
+      return { ok: false, message: 'Pain-Gespräche können nicht mehr sein als Erreicht.', el: b };
+    }
+  }
+
+  for (let i = 0; i < ranges.length; i++) {
+    for (let j = i + 1; j < ranges.length; j++) {
+      if (timeRangesOverlap(ranges[i].from, ranges[i].to, ranges[j].from, ranges[j].to)) {
+        return { ok: false, message: `Zeitblöcke überlappen sich: ${ranges[i].from}–${ranges[i].to} und ${ranges[j].from}–${ranges[j].to}.`, el: ranges[j].el };
+      }
+    }
+  }
+  const existing = data.filter(e => e.date === date && e.timeFrom);
+  for (const r of ranges) {
+    for (const e of existing) {
+      if (timeRangesOverlap(r.from, r.to, e.timeFrom, e.timeTo)) {
+        return { ok: false, message: `Dieser Zeitblock überlappt mit einem bereits gespeicherten Eintrag (${e.timeFrom}–${e.timeTo}) am ${date}.`, el: r.el };
+      }
+    }
+  }
+  return { ok: true };
+}
+
+/* ===================== HERO / STEP NAVIGATION ===================== */
+function startDailyLog() {
+  document.getElementById('log-hero').classList.add('hidden');
+  document.getElementById('log-step-numbers').classList.remove('hidden');
+  document.getElementById('log-step-reflection').classList.add('hidden');
+}
+
+function cancelDailyLog() {
+  document.getElementById('log-step-numbers').classList.add('hidden');
+  document.getElementById('log-hero').classList.remove('hidden');
+  resetForm();
+}
+
+function backToHero() {
+  document.getElementById('log-hero').classList.remove('hidden');
+  document.getElementById('log-step-numbers').classList.add('hidden');
+  document.getElementById('log-step-reflection').classList.add('hidden');
+}
+
+/* holds the timeblocks pending reflection completion */
+let pendingDailyDate = null;
+
+function goToReflectionStep() {
+  const date = document.getElementById('log-date').value;
+  if (!date) { showToast('Datum wählen', true); return; }
+
+  const blocks = document.querySelectorAll('#timeblocks-wrap .timeblock');
+  if (!blocks.length) { showToast('Mindestens ein Zeitblock nötig', true); return; }
+
+  const validation = validateTimeblocks(date);
+  if (!validation.ok) {
+    showToast(validation.message, true);
+    if (validation.el) {
+      validation.el.style.borderColor = '#c1693f';
+      validation.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => validation.el.style.borderColor = '', 1800);
+    }
+    return;
+  }
+
+  let savedCount = 0;
+  blocks.forEach(b => {
+    const from = b.querySelector('.tb-from').value;
+    const to = b.querySelector('.tb-to').value;
+    const entry = {
+      date,
+      timeFrom: from,
+      timeTo: to,
+      angerufen: parseInt(b.querySelector('.tb-angerufen').value) || 0,
+      erreicht:  parseInt(b.querySelector('.tb-erreicht').value)  || 0,
+      pain:      parseInt(b.querySelector('.tb-pain').value)      || 0,
+      gesetzt:   parseInt(b.querySelector('.tb-gesetzt').value)   || 0,
+      closed:    parseInt(b.querySelector('.tb-closed').value)    || 0,
+      umsatz:    parseInt(b.querySelector('.tb-umsatz').value)    || 0,
+      id: Date.now() + Math.floor(Math.random()*1000)
+    };
+    if (entry.angerufen === 0 && entry.erreicht === 0 && entry.closed === 0 && entry.umsatz === 0 && entry.pain === 0 && entry.gesetzt === 0) return;
+    data.push(entry);
+    savedCount++;
+  });
+
+  if (!savedCount) { showToast('Trag mindestens einen Wert ein', true); return; }
+
+  data.sort((a, b) => b.date.localeCompare(a.date) || (a.timeFrom||'').localeCompare(b.timeFrom||''));
+  saveData();
+  updateStreak(date);
+  updateSidebarCount();
+  pendingDailyDate = date;
+
+  document.getElementById('log-step-numbers').classList.add('hidden');
+  document.getElementById('log-step-reflection').classList.remove('hidden');
+  rResetFlow();
+}
+
+/* ===================== DAILY REFLECTION FLOW ===================== */
+const R_BASE_STEPS = ['energie','laune','pausen','herausforderungen','vorbereitung','erfolge','nachbereitung','abschluss'];
+let R_STEP_ORDER = [...R_BASE_STEPS];
+let rCurrentIdx = 0;
+let rAnswers = {};
+let previousVorsatz = null; // { date, text } of the most recent prior reflection with a non-empty r-morgen
+
+function findPreviousVorsatz(forDate) {
+  // find the most recent reflection strictly before forDate that has a non-empty "morgen" note
+  const prior = reflections
+    .filter(r => r.date < forDate && r.morgen && r.morgen.trim())
+    .sort((a,b) => b.date.localeCompare(a.date));
+  return prior.length ? { date: prior[0].date, text: prior[0].morgen.trim() } : null;
+}
+
+function rResetFlow() {
+  rCurrentIdx = 0;
+  rAnswers = {};
+  document.querySelectorAll('#reflection-card .ob-choice').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('#reflection-card textarea').forEach(t => t.value = '');
+
+  previousVorsatz = findPreviousVorsatz(pendingDailyDate);
+  if (previousVorsatz) {
+    R_STEP_ORDER = ['vorsatz', ...R_BASE_STEPS];
+    document.getElementById('vorsatz-quote').textContent = `Gestern hast du geschrieben: "${previousVorsatz.text}"`;
+  } else {
+    R_STEP_ORDER = [...R_BASE_STEPS];
+  }
+
+  rShowStep(0);
+}
+
+function rShowStep(idx) {
+  document.querySelectorAll('#reflection-card .ob-step').forEach(s => s.classList.remove('active'));
+  const key = R_STEP_ORDER[idx];
+  document.querySelector(`#reflection-card .ob-step[data-rstep="${key}"]`).classList.add('active');
+  rCurrentIdx = idx;
+}
+
+function rSelectSingle(el) {
+  const group = el.parentElement.dataset.group;
+  el.parentElement.querySelectorAll('.ob-choice').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  rAnswers[group] = el.dataset.val;
+}
+
+function rNext() {
+  const key = R_STEP_ORDER[rCurrentIdx];
+  if (key !== 'abschluss' && !rAnswers[key]) {
+    showToast('Bitte eine Option wählen', true);
+    return;
+  }
+  if (rCurrentIdx < R_STEP_ORDER.length - 1) rShowStep(rCurrentIdx + 1);
+}
+
+function rPrev() {
+  if (rCurrentIdx > 0) rShowStep(rCurrentIdx - 1);
+}
+
+function finishDailyLog() {
+  const reflection = {
+    date: pendingDailyDate,
+    vorsatzUmgesetzt: rAnswers.vorsatz || null,
+    vorsatzNote: document.getElementById('r-vorsatz-note') ? document.getElementById('r-vorsatz-note').value : '',
+    vorsatzRefDate: previousVorsatz ? previousVorsatz.date : null,
+    vorsatzRefText: previousVorsatz ? previousVorsatz.text : null,
+    energie: rAnswers.energie || null,
+    energieNote: document.getElementById('r-energie-note').value,
+    laune: rAnswers.laune || null,
+    launeNote: document.getElementById('r-laune-note').value,
+    pausen: rAnswers.pausen || null,
+    pausenNote: document.getElementById('r-pausen-note').value,
+    herausforderungen: rAnswers.herausforderungen || null,
+    herausforderungenNote: document.getElementById('r-herausforderungen-note').value,
+    vorbereitung: rAnswers.vorbereitung || null,
+    vorbereitungNote: document.getElementById('r-vorbereitung-note').value,
+    erfolge: rAnswers.erfolge || null,
+    erfolgeNote: document.getElementById('r-erfolge-note').value,
+    nachbereitung: rAnswers.nachbereitung || null,
+    nachbereitungNote: document.getElementById('r-nachbereitung-note').value,
+    brauche: document.getElementById('r-brauche').value,
+    morgen: document.getElementById('r-morgen').value,
+    id: Date.now()
+  };
+
+  // one reflection per day: overwrite if exists
+  const idx = reflections.findIndex(r => r.date === pendingDailyDate);
+  if (idx >= 0) reflections[idx] = reflection; else reflections.push(reflection);
+  saveReflections();
+
+  pendingDailyDate = null;
+  resetForm();
+  showDailyLogSuccess();
+}
+
+function showDailyLogSuccess() {
+  document.getElementById('log-step-reflection').classList.add('hidden');
+  document.getElementById('log-success').classList.remove('hidden');
+
+  // restart animations by forcing reflow on the svg elements
+  const circle = document.querySelector('.success-check-circle');
+  const mark = document.querySelector('.success-check-mark');
+  [circle, mark].forEach(el => {
+    if (!el) return;
+    el.style.animation = 'none';
+    el.offsetHeight; // force reflow
+    el.style.animation = null;
+  });
+
+  setTimeout(() => {
+    document.getElementById('log-success').classList.add('hidden');
+    document.getElementById('log-hero').classList.remove('hidden');
+    const dashNav = document.querySelector('#nav-section .nav-item:nth-child(2)');
+    showSection('dashboard-real', dashNav);
+  }, 2600);
+}
+
+function triggerShine(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('run');
+  requestAnimationFrame(() => el.classList.add('run'));
+}
+
+function updateHeroGreeting() {
+  const nameEl = document.getElementById('greet-name-inline');
+  if (nameEl) nameEl.textContent = profile.name;
+
+  const modeLine = document.getElementById('greet-mode-line');
+  if (modeLine) {
+    if (profile.why) {
+      const duFormSentence = toDuForm(profile.why);
+      modeLine.textContent = `${duFormSentence}.`;
+    } else {
+      modeLine.textContent = profile.mode === 'practice' ? 'du lernst Remote Sales.' : 'du arbeitest im Remote Sales.';
+    }
+  }
+
+  const whyLine = document.getElementById('greet-why-line');
+  if (whyLine) whyLine.textContent = '';
+}
+
+function resetForm() {
+  document.getElementById('timeblocks-wrap').innerHTML = '';
+  tbCounter = 0;
+  addTimeblock();
+  updateDailyGoalBar();
+}
+
+function deleteEntry(id) {
+  if (!confirm('Eintrag löschen?')) return;
+  data = data.filter(e => e.id !== id);
+  saveData(); renderHistory(); updateSidebarCount();
+}
+
+function updateStreak(newDate) {
+  if (!profile.lastEntryDate) { profile.streak = 1; }
+  else {
+    const last = new Date(profile.lastEntryDate);
+    const cur = new Date(newDate);
+    const diffDays = Math.round((cur - last) / 86400000);
+    if (diffDays === 1) profile.streak = (profile.streak || 0) + 1;
+    else if (diffDays === 0) { /* no change */ }
+    else if (diffDays > 1) profile.streak = 1;
+  }
+  profile.lastEntryDate = newDate;
+  saveProfile();
+}
+
+function getLevel(closedTotal) {
+  if (closedTotal >= 50) return { n: 5, label: 'Master Closerin' };
+  if (closedTotal >= 25) return { n: 4, label: 'Top Performerin' };
+  if (closedTotal >= 10) return { n: 3, label: 'Aufsteigende Closerin' };
+  if (closedTotal >= 3)  return { n: 2, label: 'Im Flow' };
+  return { n: 1, label: 'Erste Schritte' };
+}
+
+function getWindowBucket(fromStr) {
+  const mins = timeToMinutes(fromStr);
+  if (mins === null) return null;
+  if (mins < 9*60) return 'Früh (vor 9 Uhr)';
+  if (mins < 12*60) return 'Vormittag (9–12)';
+  if (mins < 15*60) return 'Mittag (12–15)';
+  if (mins < 18*60) return 'Nachmittag (15–18)';
+  return 'Abend (ab 18 Uhr)';
+}
+
+function renderBestWindow() {
+  const withTime = data.filter(e => e.timeFrom);
+  const bw = document.getElementById('best-window');
+  if (!withTime.length) { bw.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch keine Zeitfenster-Daten</div>'; return; }
+
+  const buckets = {};
+  withTime.forEach(e => {
+    const b = getWindowBucket(e.timeFrom);
+    if (!b) return;
+    if (!buckets[b]) buckets[b] = { angerufen: 0, erreicht: 0 };
+    buckets[b].angerufen += e.angerufen;
+    buckets[b].erreicht += e.erreicht;
+  });
+
+  const order = ['Früh (vor 9 Uhr)', 'Vormittag (9–12)', 'Mittag (12–15)', 'Nachmittag (15–18)', 'Abend (ab 18 Uhr)'];
+  const entries = order.filter(k => buckets[k] && buckets[k].angerufen > 0).map(k => ({ label: k, rate: pct(buckets[k].erreicht, buckets[k].angerufen), ...buckets[k] }));
+
+  if (!entries.length) { bw.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch keine Zeitfenster-Daten</div>'; return; }
+
+  const best = entries.reduce((a,b) => b.rate > a.rate ? b : a);
+  const maxRate = Math.max(...entries.map(e => e.rate), 1);
+
+  bw.innerHTML = `
+    <div class="best-window-card" style="margin-bottom: 16px;">
+      <div class="best-window-label">Höchste Erreichbarkeit</div>
+      <div class="best-window-val">${best.label}</div>
+      <div class="best-window-sub">${best.rate}% Show-up Rate · ${best.erreicht} von ${best.angerufen} erreicht</div>
+    </div>
+    ${entries.map(e => `
+      <div class="window-bar-row">
+        <div class="window-bar-label">${e.label}</div>
+        <div class="window-bar-bg"><div class="window-bar-fill" style="width:${Math.max(8,(e.rate/maxRate)*100)}%;">${e.rate}%</div></div>
+      </div>
+    `).join('')}
+  `;
+}
+/* ===================== NAV ===================== */
+function navItemsForMode() {
+  if (profile.mode === 'practice') {
+    return [
+      { id: 'log-practice', label: 'Üben', icon: '✦' },
+      { id: 'dashboard-practice', label: 'Dashboard', icon: '✦' },
+      { id: 'skills', label: 'Skills', icon: '✦' },
+      { id: 'history', label: 'Verlauf', icon: '✦' },
+      { id: 'weekly', label: 'Check-ups', icon: '✦' },
+    ];
+  }
+  return [
+    { id: 'log-real', label: 'Eintragen', icon: '✦' },
+    { id: 'dashboard-real', label: 'Dashboard', icon: '✦' },
+    { id: 'funnel', label: 'Funnel', icon: '✦' },
+    { id: 'history', label: 'Verlauf', icon: '✦' },
+    { id: 'insights', label: 'Insights', icon: '✦' },
+    { id: 'weekly', label: 'Check-ups', icon: '✦' },
+  ];
+}
+
+function renderNav() {
+  const nav = document.getElementById('nav-section');
+  const items = navItemsForMode();
+  nav.innerHTML = items.map((it, i) => `<div class="nav-item ${i===0?'active':''}" onclick="showSection('${it.id}', this)"><span class="nav-icon">${it.icon}</span> ${it.label}</div>`).join('');
+}
+
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const target = document.getElementById('section-' + id);
+  if (target) target.classList.add('active');
+  if (el) el.classList.add('active');
+
+  if (id === 'dashboard-real') renderDashboard();
+  if (id === 'dashboard-practice') renderPracticeDashboard();
+  if (id === 'funnel') renderFunnel();
+  if (id === 'skills') renderSkillProgress();
+  if (id === 'history') renderHistory();
+  if (id === 'insights') renderInsights();
+  if (id === 'weekly') renderWeeklyArchive();
+}
+
+/* ===================== DASHBOARD: REAL MODE ===================== */
+function renderDashboard() {
+  const t = totals();
+  const showup = pct(t.erreicht, t.angerufen);
+  const pain   = pct(t.pain, t.erreicht);
+  const set    = pct(t.gesetzt, t.pain);
+  const close  = pct(t.closed, t.gesetzt);
+
+  document.getElementById('d-showup').textContent = showup + '%';
+  document.getElementById('d-pain').textContent   = pain + '%';
+  document.getElementById('d-set').textContent    = set + '%';
+  document.getElementById('d-close').textContent  = close + '%';
+
+  document.getElementById('p-showup').innerHTML = `<span class="pill ${pillClass(showup)}">${pillText(showup)}</span>`;
+  document.getElementById('p-pain').innerHTML = `<span class="pill ${pillClass(pain)}">${pillText(pain)}</span>`;
+  document.getElementById('p-set').innerHTML = `<span class="pill ${pillClass(set)}">${pillText(set)}</span>`;
+  document.getElementById('p-close').innerHTML = `<span class="pill ${pillClass(close)}">${pillText(close)}</span>`;
+
+  document.getElementById('t-angerufen').textContent = t.angerufen;
+  document.getElementById('t-erreicht').textContent  = t.erreicht;
+  document.getElementById('t-pain').textContent      = t.pain;
+  document.getElementById('t-gesetzt').textContent   = t.gesetzt;
+  document.getElementById('t-closed').textContent    = t.closed;
+  document.getElementById('t-umsatz').textContent    = '€ ' + t.umsatz.toLocaleString('de');
+
+  const target = profile.revenueTarget || 10000;
+  const gp = Math.min(100, pct(t.umsatz, target));
+  document.getElementById('goal-current').textContent = '€ ' + t.umsatz.toLocaleString('de');
+  document.getElementById('goal-target').textContent = target.toLocaleString('de');
+  document.getElementById('goal-bar-fill').style.width = gp + '%';
+  const remaining = Math.max(0, target - t.umsatz);
+  document.getElementById('goal-note').textContent = remaining > 0
+    ? `Noch € ${remaining.toLocaleString('de')} bis zu deinem Ziel.`
+    : 'Ziel erreicht! Zeit für ein neues.';
+
+  const rates = [
+    { name: 'Show-up Rate', val: showup, advice: 'Teste neue Anrufzeiten. Schau im Dashboard nach, in welchem Zeitfenster du am besten erreichst.' },
+    { name: 'Pain Rate', val: pain, advice: 'Arbeite an deinem Gesprächseinstieg. Die ersten zwei Sätze entscheiden.' },
+    { name: 'Set Rate', val: set, advice: 'Übe den direkten Übergang zum nächsten Schritt am Ende jedes Gesprächs.' },
+    { name: 'Close Rate', val: close, advice: 'Arbeite an Einwandbehandlung und einem klaren, konkreten Angebot.' },
+  ];
+  if (t.angerufen > 0) {
+    const weakest = rates.reduce((a, b) => b.val < a.val ? b : a);
+    document.getElementById('bottleneck-name').textContent = weakest.name;
+    document.getElementById('bottleneck-value').textContent = weakest.val + '%';
+    document.getElementById('bottleneck-next').innerHTML = `<strong>Nächster Schritt:</strong> ${weakest.advice}`;
+  }
+
+  document.getElementById('streak-val').textContent = profile.streak || 0;
+  const lvl = getLevel(t.closed);
+  document.getElementById('level-val').textContent = 'Level ' + lvl.n;
+  document.getElementById('level-label').textContent = lvl.label;
+
+  const rg = [
+    { name: 'Show-up Rate',  val: showup, desc: 'Wie viele gehen ran' },
+    { name: 'Pain Rate',     val: pain,   desc: 'Wie viele öffnen sich' },
+    { name: 'Set Rate',      val: set,    desc: 'Wie viele werden Termine' },
+    { name: 'Close Rate',    val: close,  desc: 'Wie viele werden Kunden' },
+    { name: 'Dial to Close', val: pct(t.closed, t.angerufen), desc: 'Von Anruf zu Abschluss' },
+    { name: 'Pain to Close', val: pct(t.closed, t.pain),      desc: 'Sobald du im Pain bist' },
+  ];
+  document.getElementById('rates-grid').innerHTML = rg.map(r => `
+    <div class="rate-card">
+      <div class="rate-circle">${r.val}%</div>
+      <div class="rate-name">${r.name}</div>
+      <div class="rate-desc">${r.desc}</div>
+    </div>`).join('');
+
+  renderBestWindow();
+
+  const byDate = {};
+  data.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = { date: e.date, angerufen:0, erreicht:0, closed:0 };
+    byDate[e.date].angerufen += e.angerufen;
+    byDate[e.date].erreicht += e.erreicht;
+    byDate[e.date].closed += e.closed;
+  });
+  const last7 = Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,7).reverse();
+  const mc = document.getElementById('mini-chart');
+  if (!last7.length) {
+    mc.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div>';
+  } else {
+    const maxA = Math.max(...last7.map(e => e.angerufen), 1);
+    mc.innerHTML = '<div class="chart-wrap">' + last7.map(e => {
+      const ha = Math.round((e.angerufen / maxA) * 80);
+      const he = Math.round((e.erreicht  / maxA) * 80);
+      const hc = Math.round((e.closed    / maxA) * 80);
+      return `<div class="chart-bar-group">
+        <div class="chart-bars">
+          <div class="chart-bar" style="height:${ha}px;background:#d98b63;opacity:.5;" title="Angerufen: ${e.angerufen}"></div>
+          <div class="chart-bar" style="height:${he}px;background:#c1693f;opacity:.85;" title="Erreicht: ${e.erreicht}"></div>
+          <div class="chart-bar" style="height:${hc}px;background:#7a9170;" title="Closed: ${e.closed}"></div>
+        </div>
+        <div class="chart-date">${e.date.slice(5)}</div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  renderWeekCompare();
+  document.getElementById('why-display').textContent = profile.why ? `"${profile.why}"` : 'Du hast noch kein Warum hinterlegt. Trag es im Profil nach.';
+
+  const hour = new Date().getHours();
+  const timeGreet = hour < 12 ? 'Guten Morgen' : hour < 18 ? 'Guten Tag' : 'Guten Abend';
+  document.getElementById('dash-greet-time').textContent = timeGreet;
+  document.getElementById('dash-greet-name').innerHTML = `Hey <em>${profile.name}</em>.`;
+}
+
+function renderWeekCompare() {
+  const wc = document.getElementById('week-compare');
+  if (data.length < 2) { wc.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div>'; return; }
+
+  const now = new Date();
+  const startOfThisWeek = isoWeekStart(now);
+  const startOfLastWeek = new Date(startOfThisWeek);
+  startOfLastWeek.setDate(startOfThisWeek.getDate() - 7);
+
+  function inRange(dateStr, start, end) {
+    const d = new Date(dateStr);
+    return d >= start && d < end;
+  }
+
+  const thisWeek = data.filter(e => inRange(e.date, startOfThisWeek, new Date(startOfThisWeek.getTime() + 7*86400000)));
+  const lastWeek = data.filter(e => inRange(e.date, startOfLastWeek, startOfThisWeek));
+
+  function sum(arr, key) { return arr.reduce((a,e) => a + e[key], 0); }
+
+  const metrics = [
+    { label: 'Angerufen', tw: sum(thisWeek,'angerufen'), lw: sum(lastWeek,'angerufen') },
+    { label: 'Erreicht', tw: sum(thisWeek,'erreicht'), lw: sum(lastWeek,'erreicht') },
+    { label: 'Closed', tw: sum(thisWeek,'closed'), lw: sum(lastWeek,'closed') },
+    { label: 'Umsatz', tw: sum(thisWeek,'umsatz'), lw: sum(lastWeek,'umsatz'), money: true },
+  ];
+
+  wc.innerHTML = `<div class="form-grid">` + metrics.map(m => {
+    const diff = m.tw - m.lw;
+    const diffPct = m.lw > 0 ? Math.round((diff / m.lw) * 100) : (m.tw > 0 ? 100 : 0);
+    const up = diff >= 0;
+    const fmt = v => m.money ? '€ ' + v.toLocaleString('de') : v;
+    return `<div style="background: var(--surface2); border-radius: 14px; padding: 18px 20px;">
+      <div style="font-size: 11px; color: var(--muted); margin-bottom: 6px;">${m.label}</div>
+      <div style="display:flex; align-items: baseline; gap: 10px;">
+        <span style="font-family: var(--serif); font-size: 24px; color: var(--brown);">${fmt(m.tw)}</span>
+        <span style="font-size: 12px; color: ${up ? 'var(--success)' : 'var(--terracotta)'};">${up ? '↑' : '↓'} ${Math.abs(diffPct)}%</span>
+      </div>
+      <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">letzte Woche: ${fmt(m.lw)}</div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+/* ===================== FUNNEL ===================== */
+function renderFunnel() {
+  const t = totals();
+  const steps = [
+    { label: 'Angerufen', val: t.angerufen, color: '#d98b63' },
+    { label: 'Erreicht',  val: t.erreicht,  color: '#c98a82' },
+    { label: 'Pain',      val: t.pain,      color: '#c1693f' },
+    { label: 'Gesetzt',   val: t.gesetzt,   color: '#b8923f' },
+    { label: 'Closed',    val: t.closed,    color: '#7a9170' },
+  ];
+  const fv = document.getElementById('funnel-vis');
+  if (!t.angerufen) {
+    fv.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div>';
+  } else {
+    fv.innerHTML = steps.map(s => {
+      const p = pct(s.val, t.angerufen || 1);
+      return `<div class="funnel-step">
+        <div class="funnel-label">${s.label}</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width:${p}%;background:${s.color};">${s.val}</div></div></div>
+        <div class="funnel-pct">${p}%</div>
+      </div>`;
+    }).join('');
+  }
+
+  const dm = document.getElementById('deal-math');
+  if (t.closed > 0) {
+    dm.innerHTML = `<div class="deal-math-grid">
+      <div class="deal-math-cell"><div class="deal-math-num">${Math.ceil(t.angerufen/t.closed)}</div><div class="deal-math-label">Anrufe</div></div>
+      <div class="deal-math-cell"><div class="deal-math-num">${Math.ceil(t.erreicht/t.closed)}</div><div class="deal-math-label">Erreichungen</div></div>
+      <div class="deal-math-cell"><div class="deal-math-num">${t.gesetzt > 0 ? Math.ceil(t.gesetzt/t.closed) : '?'}</div><div class="deal-math-label">Termine</div></div>
+      <div class="deal-math-cell"><div class="deal-math-num" style="color:var(--success);">1</div><div class="deal-math-label">Deal</div></div>
+    </div>`;
+  } else {
+    dm.textContent = 'Noch kein Abschluss eingetragen.';
+  }
+}
+
+/* ===================== HISTORY (mode-aware) ===================== */
+function renderHistory() {
+  const thead = document.getElementById('history-thead');
+  const tbody = document.getElementById('history-body');
+  const sub = document.getElementById('history-sub');
+
+  if (profile.mode === 'practice') {
+    sub.textContent = 'Jede Zeile entspricht einer Übungssession.';
+    thead.innerHTML = `<tr><th>Datum</th><th>Partner</th>${SKILL_KEYS.map(s=>`<th>${s.label}</th>`).join('')}<th></th></tr>`;
+    if (!practiceData.length) {
+      tbody.innerHTML = `<tr><td colspan="${SKILL_KEYS.length + 3}"><div class="empty"><div class="empty-icon">✦</div>Noch keine Sessions</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = practiceData.map(e => `
+      <tr>
+        <td>${e.date}</td>
+        <td>${PARTNER_ICONS[e.partner] || ''} ${PARTNER_LABELS[e.partner] || e.partner}</td>
+        ${SKILL_KEYS.map(s => `<td>${e.skills[s.key]}</td>`).join('')}
+        <td><button class="btn btn-danger" onclick="deletePracticeEntry(${e.id})">Löschen</button></td>
+      </tr>`).join('');
+    return;
+  }
+
+  sub.textContent = 'Jeder Eintrag entspricht einem Zeitblock. Mehrere Blöcke am selben Tag erscheinen als eigene Zeilen.';
+  thead.innerHTML = `<tr><th>Datum</th><th>Zeit</th><th>Angerufen</th><th>Erreicht</th><th>Pain</th><th>Gesetzt</th><th>Closed</th><th>Umsatz</th><th>Close Rate</th><th></th></tr>`;
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">✦</div>Noch keine Einträge</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(e => {
+    const cr = pct(e.closed, e.gesetzt);
+    const cls = cr >= 60 ? 'badge-good' : cr >= 30 ? 'badge-mid' : 'badge-low';
+    const timeLabel = e.timeFrom ? `${e.timeFrom}–${e.timeTo}` : '—';
+    return `<tr>
+      <td>${e.date}</td><td>${timeLabel}</td><td>${e.angerufen}</td><td>${e.erreicht}</td><td>${e.pain}</td><td>${e.gesetzt}</td>
+      <td style="color:var(--terracotta);font-family:var(--serif);font-size:18px;">${e.closed}</td>
+      <td style="color:var(--success);">${e.umsatz ? '€ '+e.umsatz.toLocaleString('de') : '—'}</td>
+      <td><span class="badge ${cls}">${cr}%</span></td>
+      <td><button class="btn btn-danger" onclick="deleteEntry(${e.id})">Löschen</button></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ===================== INSIGHTS (real mode) ===================== */
+/* ===================== REFLECTION x PERFORMANCE CORRELATION ===================== */
+function dailyAggregates() {
+  const byDate = {};
+  data.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = { angerufen:0, erreicht:0, pain:0, gesetzt:0, closed:0, umsatz:0 };
+    byDate[e.date].angerufen += e.angerufen;
+    byDate[e.date].erreicht += e.erreicht;
+    byDate[e.date].pain += e.pain;
+    byDate[e.date].gesetzt += e.gesetzt;
+    byDate[e.date].closed += e.closed;
+    byDate[e.date].umsatz += e.umsatz;
+  });
+  return byDate;
+}
+
+function buildVorsatzInsight() {
+  const withVorsatz = reflections.filter(r => r.vorsatzUmgesetzt);
+  if (withVorsatz.length < 3) return null;
+
+  const ja = withVorsatz.filter(r => r.vorsatzUmgesetzt === 'Ja').length;
+  const teilweise = withVorsatz.filter(r => r.vorsatzUmgesetzt === 'Teilweise').length;
+  const nein = withVorsatz.filter(r => r.vorsatzUmgesetzt === 'Nein').length;
+  const rate = Math.round(((ja + teilweise * 0.5) / withVorsatz.length) * 100);
+
+  if (rate >= 70) {
+    return { type: 'good', text: `Du setzt deine eigenen Vorsätze zu ${rate}% um (${ja} von ${withVorsatz.length} mal voll umgesetzt). Du hältst Wort dir selbst gegenüber, das ist eine seltene Stärke.` };
+  }
+  if (rate < 40) {
+    return { type: 'warn', text: `Nur ${rate}% deiner Vorsätze von gestern setzt du tatsächlich um (${nein} von ${withVorsatz.length} mal gar nicht). Vielleicht hilft es, dir kleinere, konkretere Vorsätze zu setzen statt großer Ziele.` };
+  }
+  return { type: 'good', text: `Du setzt ${rate}% deiner Vorsätze um. Solide Quote, mit etwas mehr Konkretheit im "morgen"-Vorsatz wird sie noch höher.` };
+}
+
+function buildReflectionInsight() {
+  if (!reflections.length) return null;
+  const byDate = dailyAggregates();
+
+  function avgCloseRateFor(filterFn) {
+    const matching = reflections.filter(filterFn).filter(r => byDate[r.date] && byDate[r.date].gesetzt > 0);
+    if (!matching.length) return null;
+    const rates = matching.map(r => pct(byDate[r.date].closed, byDate[r.date].gesetzt));
+    return { avg: Math.round(rates.reduce((a,b)=>a+b,0) / rates.length), count: matching.length };
+  }
+
+  const highEnergy = avgCloseRateFor(r => r.energie === 'Hoch und stabil');
+  const lowEnergy = avgCloseRateFor(r => r.energie === 'Eher niedrig');
+  const goodMindset = avgCloseRateFor(r => r.laune === 'Optimistisch & motiviert');
+  const badMindset = avgCloseRateFor(r => r.laune === 'Zweifelnd / gereizt');
+
+  if (highEnergy && lowEnergy && highEnergy.count >= 2 && lowEnergy.count >= 2) {
+    const diff = highEnergy.avg - lowEnergy.avg;
+    if (Math.abs(diff) >= 10) {
+      return { type: diff > 0 ? 'good' : 'warn', text: `An Tagen mit hoher, stabiler Energie liegt deine Close Rate bei ${highEnergy.avg}%, an Tagen mit niedriger Energie nur bei ${lowEnergy.avg}%. Deine Energie ist messbar wichtig für deinen Erfolg.` };
+    }
+  }
+
+  if (goodMindset && badMindset && goodMindset.count >= 2 && badMindset.count >= 2) {
+    const diff = goodMindset.avg - badMindset.avg;
+    if (Math.abs(diff) >= 10) {
+      return { type: diff > 0 ? 'good' : 'warn', text: `An Tagen mit optimistischem Mindset liegt deine Close Rate bei ${goodMindset.avg}%, an zweifelnden Tagen bei ${badMindset.avg}%. Dein mentaler Zustand wirkt sich direkt auf deine Abschlüsse aus.` };
+    }
+  }
+
+  return null;
+}
+
+function renderInsights() {
+  const il = document.getElementById('insight-list');
+  if (data.length < 2) {
+    il.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Mehr Einträge nötig</div>';
+    document.getElementById('best-worst').innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div>';
+    return;
+  }
+  const t = totals();
+  const showup = pct(t.erreicht, t.angerufen);
+  const pain   = pct(t.pain, t.erreicht);
+  const set    = pct(t.gesetzt, t.pain);
+  const close  = pct(t.closed, t.gesetzt);
+  const soft = profile.level === 'anfaenger';
+  const insights = [];
+
+  if (showup < 30) insights.push({ type:'warn', text: soft ? `Deine Show-up Rate liegt bei ${showup}%. Das ist völlig normal am Anfang. Schau im Dashboard nach, welches Zeitfenster bei dir am besten funktioniert.` : `Show-up Rate ${showup}%. Zu niedrig. Schau dir deine beste Anruf-Zeit im Dashboard an und konzentriere dich darauf.` });
+  else if (showup >= 60) insights.push({ type:'good', text:`Show-up Rate ${showup}%. Du erreichst die Mehrheit. Fokus jetzt auf Gesprächsqualität.` });
+
+  if (pain < 40) insights.push({ type:'warn', text: soft ? `Pain Rate ${pain}%. Das wird mit jedem Gespräch leichter. Achte auf deine ersten Sätze nach der Begrüßung.` : `Pain Rate ${pain}%. Dein Einstieg muss schneller in die Tiefe gehen.` });
+  else if (pain >= 70) insights.push({ type:'good', text:`Pain Rate ${pain}%. Du führst echte Gespräche. Das ist deine Stärke.` });
+
+  if (set < 30) insights.push({ type:'warn', text: soft ? `Set Rate ${set}%. Übe den Übergang zum Termin, das kommt mit Übung ganz natürlich.` : `Set Rate ${set}%. Der Übergang zum Termin braucht mehr Klarheit.` });
+  else if (set >= 60) insights.push({ type:'good', text:`Set Rate ${set}%. Starke Terminquote. Dein Pitch funktioniert.` });
+
+  if (close < 25) insights.push({ type:'warn', text: soft ? `Close Rate ${close}%. Ganz normal in der Anfangszeit. Einwandbehandlung wird mit jedem Call leichter.` : `Close Rate ${close}%. Arbeite gezielt an Einwandbehandlung.` });
+  else if (close >= 60) insights.push({ type:'good', text:`Close Rate ${close}%. Sobald du im Gespräch bist, überzeugst du. Skaliere das Volumen.` });
+
+  if (!insights.length) insights.push({ type:'good', text:'Deine Zahlen sind solide. Konsistenz ist jetzt dein wichtigstes Asset.' });
+
+  const reflectionInsight = buildReflectionInsight();
+  if (reflectionInsight) insights.push(reflectionInsight);
+
+  const vorsatzInsight = buildVorsatzInsight();
+  if (vorsatzInsight) insights.push(vorsatzInsight);
+
+  il.innerHTML = insights.map(i => `<div class="insight-item ${i.type === 'warn' ? 'warn' : 'good'}">${i.text}</div>`).join('');
+
+  const withGesetzt = data.filter(e => e.gesetzt > 0);
+  const bw = document.getElementById('best-worst');
+  if (withGesetzt.length) {
+    const best  = withGesetzt.reduce((a,b) => pct(b.closed,b.gesetzt) > pct(a.closed,a.gesetzt) ? b : a);
+    const worst = withGesetzt.reduce((a,b) => pct(b.closed,b.gesetzt) < pct(a.closed,a.gesetzt) ? b : a);
+    bw.innerHTML = `<div class="bw-grid">
+      <div class="bw-card best"><div class="bw-tag">Bester Tag</div><div class="bw-date">${best.date}${best.timeFrom ? ' · ' + best.timeFrom + '–' + best.timeTo : ''}</div><div class="bw-stat">${pct(best.closed, best.gesetzt)}% Close Rate</div>${best.gut ? `<div class="bw-note">"${best.gut}"</div>` : ''}</div>
+      <div class="bw-card worst"><div class="bw-tag">Verbesserungstag</div><div class="bw-date">${worst.date}${worst.timeFrom ? ' · ' + worst.timeFrom + '–' + worst.timeTo : ''}</div><div class="bw-stat">${pct(worst.closed, worst.gesetzt)}% Close Rate</div>${worst.besser ? `<div class="bw-note">"${worst.besser}"</div>` : ''}</div>
+    </div>`;
+  } else {
+    bw.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch keine Termine eingetragen</div>';
+  }
+}
+/* ===================== PRACTICE MODE: FORM ===================== */
+function skillSliderTemplate(prefix, skillKey, label) {
+  return `
+    <div class="skill-slider-row">
+      <div class="skill-slider-top">
+        <span class="skill-slider-label">${label}</span>
+        <span class="skill-slider-val" id="${prefix}-${skillKey}-val">5</span>
+      </div>
+      <input type="range" class="skill-slider" id="${prefix}-${skillKey}" min="1" max="10" value="5"
+        oninput="document.getElementById('${prefix}-${skillKey}-val').textContent = this.value">
+      <div class="skill-scale-labels"><span>überhaupt nicht sicher</span><span>extrem sicher</span></div>
+    </div>`;
+}
+
+function renderPracticeSliders() {
+  const wrap = document.getElementById('practice-skill-sliders');
+  if (wrap) wrap.innerHTML = SKILL_KEYS.map(s => skillSliderTemplate('ps', s.key, s.label)).join('');
+}
+
+function selectPartner(el) {
+  document.querySelectorAll('#partner-choices .partner-choice').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPartner = el.dataset.val;
+}
+
+function savePracticeEntry() {
+  const date = document.getElementById('p-date').value;
+  if (!date) { showToast('Datum wählen', true); return; }
+  if (!selectedPartner) { showToast('Wähle, mit wem du geübt hast', true); return; }
+
+  const skills = {};
+  SKILL_KEYS.forEach(s => { skills[s.key] = parseInt(document.getElementById('ps-' + s.key).value) || 5; });
+
+  const entry = {
+    date,
+    partner: selectedPartner,
+    skills,
+    gut: document.getElementById('p-gut').value,
+    besser: document.getElementById('p-besser').value,
+    id: Date.now() + Math.floor(Math.random()*1000)
+  };
+
+  practiceData.push(entry);
+  practiceData.sort((a,b) => b.date.localeCompare(a.date));
+  savePracticeData();
+  updatePracticeStreak(date);
+  updateSidebarCount();
+  showToast('Session gespeichert! Du bleibst dran.');
+  triggerShine('shine-flash-p');
+  resetPracticeForm();
+}
+
+function resetPracticeForm() {
+  document.getElementById('p-date').value = new Date().toISOString().slice(0,10);
+  document.querySelectorAll('#partner-choices .partner-choice').forEach(c => c.classList.remove('selected'));
+  selectedPartner = null;
+  SKILL_KEYS.forEach(s => {
+    const el = document.getElementById('ps-' + s.key);
+    if (el) { el.value = 5; document.getElementById('ps-' + s.key + '-val').textContent = '5'; }
+  });
+  document.getElementById('p-gut').value = '';
+  document.getElementById('p-besser').value = '';
+}
+
+function deletePracticeEntry(id) {
+  if (!confirm('Session löschen?')) return;
+  practiceData = practiceData.filter(e => e.id !== id);
+  savePracticeData(); renderHistory(); updateSidebarCount();
+}
+
+function updatePracticeStreak(newDate) {
+  if (!profile.lastPracticeDate) { profile.practiceStreak = 1; }
+  else {
+    const last = new Date(profile.lastPracticeDate);
+    const cur = new Date(newDate);
+    const diffDays = Math.round((cur - last) / 86400000);
+    if (diffDays === 1) profile.practiceStreak = (profile.practiceStreak || 0) + 1;
+    else if (diffDays === 0) { /* no change */ }
+    else if (diffDays > 1) profile.practiceStreak = 1;
+  }
+  profile.lastPracticeDate = newDate;
+  saveProfile();
+}
+
+/* ===================== PRACTICE MODE: DASHBOARD ===================== */
+function renderPracticeDashboard() {
+  document.getElementById('p-streak-val').textContent = profile.practiceStreak || 0;
+  document.getElementById('p-session-count').textContent = practiceData.length;
+
+  const uniqueDays = new Set(practiceData.map(e => e.date));
+  document.getElementById('p-days-practiced').textContent = uniqueDays.size;
+
+  const weekGoal = profile.weeklySessionGoal || 5;
+  const startOfThisWeek = isoWeekStart(new Date());
+  const endOfThisWeek = new Date(startOfThisWeek.getTime() + 7*86400000);
+  const thisWeekCount = practiceData.filter(e => {
+    const d = new Date(e.date);
+    return d >= startOfThisWeek && d < endOfThisWeek;
+  }).length;
+  const wp = Math.min(100, pct(thisWeekCount, weekGoal));
+  document.getElementById('p-week-current').textContent = thisWeekCount;
+  document.getElementById('p-week-target').textContent = weekGoal;
+  document.getElementById('p-week-bar-fill').style.width = wp + '%';
+  document.getElementById('p-week-note').textContent = thisWeekCount >= weekGoal
+    ? 'Wochenziel erreicht! Stark.'
+    : `Noch ${weekGoal - thisWeekCount} Session${weekGoal - thisWeekCount === 1 ? '' : 's'} bis zu deinem Wochenziel.`;
+
+  const partnerCounts = { ki: 0, anna: 0, freundin: 0 };
+  practiceData.forEach(e => { if (partnerCounts[e.partner] !== undefined) partnerCounts[e.partner]++; });
+  document.getElementById('partner-stat-row').innerHTML = Object.keys(partnerCounts).map(k => `
+    <div class="partner-stat-card">
+      <div class="partner-stat-icon">${PARTNER_ICONS[k]}</div>
+      <div class="partner-stat-num">${partnerCounts[k]}</div>
+      <div class="partner-stat-label">${PARTNER_LABELS[k]}</div>
+    </div>`).join('');
+
+  const byDate = {};
+  practiceData.forEach(e => { byDate[e.date] = (byDate[e.date] || 0) + 1; });
+  const last7 = Object.keys(byDate).sort().slice(-7);
+  const mc = document.getElementById('practice-mini-chart');
+  if (!last7.length) {
+    mc.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch keine Daten</div>';
+  } else {
+    const maxC = Math.max(...last7.map(d => byDate[d]), 1);
+    mc.innerHTML = '<div class="chart-wrap">' + last7.map(d => {
+      const h = Math.round((byDate[d] / maxC) * 80);
+      return `<div class="chart-bar-group">
+        <div class="chart-bars"><div class="chart-bar" style="height:${h}px;background:#c1693f;" title="${byDate[d]} Sessions"></div></div>
+        <div class="chart-date">${d.slice(5)}</div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  document.getElementById('why-display-p').textContent = profile.why ? `"${profile.why}"` : 'Du hast noch kein Warum hinterlegt. Trag es im Profil nach.';
+
+  const hour = new Date().getHours();
+  const timeGreet = hour < 12 ? 'Guten Morgen' : hour < 18 ? 'Guten Tag' : 'Guten Abend';
+  document.getElementById('dash-greet-time-p').textContent = timeGreet;
+  document.getElementById('dash-greet-name-p').innerHTML = `Hey <em>${profile.name}</em>.`;
+
+  showRandomPracticeQuote();
+}
+
+/* ===================== PRACTICE MODE: SKILL PROGRESS ===================== */
+function renderSkillProgress() {
+  const wrap = document.getElementById('skill-progress-list');
+  if (practiceData.length < 2) {
+    wrap.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Mehr Sessions nötig für einen Trend</div>';
+    return;
+  }
+  const sorted = [...practiceData].sort((a,b) => a.date.localeCompare(b.date));
+  const firstChunk = sorted.slice(0, Math.min(3, sorted.length));
+  const lastChunk = sorted.slice(Math.max(0, sorted.length - 3));
+
+  function avg(chunk, key) {
+    const vals = chunk.map(e => e.skills[key]).filter(v => v !== undefined);
+    if (!vals.length) return 0;
+    return vals.reduce((a,b) => a+b, 0) / vals.length;
+  }
+
+  wrap.innerHTML = SKILL_KEYS.map(s => {
+    const firstAvg = avg(firstChunk, s.key);
+    const lastAvg = avg(lastChunk, s.key);
+    const diff = lastAvg - firstAvg;
+    const trendColor = diff > 0.3 ? 'var(--success)' : diff < -0.3 ? 'var(--terracotta)' : 'var(--muted)';
+    const trendArrow = diff > 0.3 ? '↑' : diff < -0.3 ? '↓' : '→';
+    return `
+      <div class="skill-progress-row">
+        <div class="skill-progress-label">${s.label}</div>
+        <div class="skill-progress-bg"><div class="skill-progress-fill" style="width:${lastAvg*10}%;"></div></div>
+        <div class="skill-progress-val">${lastAvg.toFixed(1)}</div>
+        <div class="skill-progress-trend" style="color:${trendColor};">${trendArrow} ${Math.abs(diff).toFixed(1)}</div>
+      </div>`;
+  }).join('');
+}
+/* ===================== WEEKLY CHECK-UP ===================== */
+function wcSliderTemplate(skillKey, label) {
+  return `
+    <div class="skill-slider-row">
+      <div class="skill-slider-top">
+        <span class="skill-slider-label">${label}</span>
+        <span class="skill-slider-val" id="wc-${skillKey}-val">5</span>
+      </div>
+      <input type="range" class="skill-slider" id="wc-${skillKey}" min="1" max="10" value="5"
+        oninput="document.getElementById('wc-${skillKey}-val').textContent = this.value">
+      <div class="skill-scale-labels"><span>überhaupt nicht sicher</span><span>extrem sicher</span></div>
+    </div>`;
+}
+
+function renderWeeklySliders() {
+  const wrap = document.getElementById('wc-skill-sliders');
+  if (wrap) wrap.innerHTML = SKILL_KEYS.map(s => wcSliderTemplate(s.key, s.label)).join('');
+}
+
+function getFridayOfCurrentWeek() {
+  const monday = isoWeekStart(new Date());
+  const friday = new Date(monday);
+  friday.setDate(monday.getDate() + 4);
+  return friday;
+}
+
+function shouldShowWeeklyCheckup() {
+  if (!profile) return false;
+  const today = new Date();
+  const friday = getFridayOfCurrentWeek();
+  const isFridayOrLater = today >= friday;
+  if (!isFridayOrLater) return false;
+
+  const fridayStr = friday.toISOString().slice(0,10);
+  if (profile.lastWeeklyCheckup === fridayStr) return false; // already done this week
+  if (profile.dismissedWeeklyCheckup === fridayStr) return false; // dismissed this week
+
+  return true;
+}
+
+function maybeShowWeeklyCheckup() {
+  if (shouldShowWeeklyCheckup()) {
+    document.getElementById('wc-date').value = new Date().toISOString().slice(0,10);
+    document.getElementById('wc-applications-field').style.display = (profile.mode === 'real') ? 'block' : 'none';
+    renderWeeklySliders();
+    document.getElementById('weekly-checkup').classList.add('show');
+  }
+}
+
+function submitWeeklyCheckup() {
+  const date = document.getElementById('wc-date').value || new Date().toISOString().slice(0,10);
+  const skills = {};
+  SKILL_KEYS.forEach(s => { skills[s.key] = parseInt(document.getElementById('wc-' + s.key).value) || 5; });
+
+  const checkup = {
+    date,
+    name: profile.name,
+    applications: parseInt(document.getElementById('wc-applications').value) || 0,
+    aiCalls: parseInt(document.getElementById('wc-ai-calls').value) || 0,
+    skills,
+    lever: document.getElementById('wc-lever').value,
+    focus: document.getElementById('wc-focus').value,
+    goals: document.getElementById('wc-goals').value,
+    learning: document.getElementById('wc-learning').value,
+    proud: document.getElementById('wc-proud').value,
+    id: Date.now()
+  };
+
+  weeklyCheckups.unshift(checkup);
+  saveWeekly();
+
+  const friday = getFridayOfCurrentWeek();
+  profile.lastWeeklyCheckup = friday.toISOString().slice(0,10);
+  saveProfile();
+
+  document.getElementById('weekly-checkup').classList.remove('show');
+  showToast('Check-up gespeichert. Starke Woche.');
+
+  // reset fields for next time
+  ['wc-applications','wc-ai-calls','wc-lever','wc-focus','wc-goals','wc-learning','wc-proud'].forEach(id => document.getElementById(id).value = '');
+}
+
+function dismissWeeklyCheckup() {
+  const friday = getFridayOfCurrentWeek();
+  profile.dismissedWeeklyCheckup = friday.toISOString().slice(0,10);
+  saveProfile();
+  document.getElementById('weekly-checkup').classList.remove('show');
+}
+
+function renderWeeklyArchive() {
+  const wrap = document.getElementById('weekly-archive-list');
+  if (!weeklyCheckups.length) {
+    wrap.innerHTML = '<div class="empty"><div class="empty-icon">✦</div>Noch kein Check-up ausgefüllt</div>';
+    return;
+  }
+  wrap.innerHTML = weeklyCheckups.map(c => {
+    const avgSkill = (SKILL_KEYS.reduce((sum,s) => sum + (c.skills[s.key]||0), 0) / SKILL_KEYS.length).toFixed(1);
+    return `
+    <div class="card">
+      <div style="display:flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px;">
+        <span style="font-family: var(--serif); font-size: 22px; color: var(--brown);">${c.date}</span>
+        <span class="badge badge-mid">Ø Sicherheit ${avgSkill}/10</span>
+      </div>
+      <div class="form-grid" style="margin-bottom: 16px;">
+        ${c.aiCalls ? `<div class="summary-row"><span class="summary-key">KI-Übungscalls</span><span class="summary-val">${c.aiCalls}</span></div>` : ''}
+        ${c.applications ? `<div class="summary-row"><span class="summary-key">Bewerbungen</span><span class="summary-val">${c.applications}</span></div>` : ''}
+      </div>
+      ${c.lever ? `<div class="insight-item good" style="margin-bottom:10px;"><strong>Größter Hebel:</strong> ${c.lever}</div>` : ''}
+      ${c.focus ? `<div class="insight-item" style="margin-bottom:10px;"><strong>Fokus nächste Woche:</strong> ${c.focus}</div>` : ''}
+      ${c.proud ? `<div class="insight-item good"><strong>Stolz darauf:</strong> ${c.proud}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ===================== TOAST ===================== */
+function showToast(msg, err) {
+  const t = document.getElementById('toast');
+  t.textContent = (err ? '' : '✓ ') + msg;
+  t.style.background = err ? '#c1693f' : '#7a9170';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ===================== INIT ===================== */
+/* ===================== BACKUP / EXPORT / IMPORT ===================== */
+function exportAllData() {
+  const backup = {
+    exportedAt: new Date().toISOString(),
+    profile: profile,
+    entries: data,
+    reflections: reflections,
+    practiceData: practiceData,
+    practiceArchive: practiceArchive,
+    weeklyCheckups: weeklyCheckups,
+  };
+
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `sales-flow-backup-${dateStr}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast('Backup heruntergeladen. Sicher aufbewahren!');
+}
+
+function importAllData(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const backup = JSON.parse(e.target.result);
+      if (!backup.profile) { showToast('Diese Datei sieht nicht wie ein gültiges Backup aus.', true); return; }
+
+      profile = backup.profile;
+      data = backup.entries || [];
+      reflections = backup.reflections || [];
+      practiceData = backup.practiceData || [];
+      practiceArchive = backup.practiceArchive || [];
+      weeklyCheckups = backup.weeklyCheckups || [];
+
+      saveProfile(); saveData(); saveReflections(); savePracticeData(); savePracticeArchive(); saveWeekly();
+
+      showToast('Backup wiederherstellt. Lade neu...');
+      setTimeout(() => location.reload(), 1200);
+    } catch (err) {
+      showToast('Datei konnte nicht gelesen werden.', true);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function updateSidebarCount() {
+  const count = profile.mode === 'practice' ? practiceData.length : data.length;
+  document.getElementById('entry-count').textContent = count + (count === 1 ? ' Eintrag' : ' Einträge');
+  document.getElementById('sidebar-name').textContent = profile ? profile.name : '';
+  const badge = document.getElementById('mode-badge');
+  if (profile.mode === 'practice') {
+    badge.textContent = 'Übungsmodus';
+    badge.className = 'mode-badge practice';
+  } else {
+    badge.textContent = 'Echter Job';
+    badge.className = 'mode-badge real';
+  }
+}
+
+function initApp() {
+  renderNav();
+  updateSidebarCount();
+
+  if (profile.mode === 'practice') {
+    document.getElementById('p-date').value = new Date().toISOString().slice(0,10);
+    const hour = new Date().getHours();
+    const timeGreet = hour < 12 ? 'Guten Morgen' : hour < 18 ? 'Guten Tag' : 'Guten Abend';
+    document.getElementById('greet-time-p').textContent = timeGreet;
+    document.getElementById('greet-name-p-inline').textContent = profile.name;
+    document.getElementById('greet-mode-line-p').textContent = profile.why ? `${toDuForm(profile.why)}.` : 'du lernst Remote Sales.';
+    renderPracticeSliders();
+    resetPracticeForm();
+    showSection('log-practice', document.querySelector('#nav-section .nav-item'));
+  } else {
+    document.getElementById('log-date').value = new Date().toISOString().slice(0,10);
+    const hour = new Date().getHours();
+    const timeGreet = hour < 12 ? 'Guten Morgen' : hour < 18 ? 'Guten Tag' : 'Guten Abend';
+    document.getElementById('greet-time').textContent = timeGreet;
+    updateHeroGreeting();
+    resetForm();
+    showRandomQuote();
+    showSection('log-real', document.querySelector('#nav-section .nav-item'));
+  }
+
+  maybeShowWeeklyCheckup();
+}
+
+if (profile) {
+  document.getElementById('onboarding').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  initApp();
+}
+</script>
+</body>
+</html>
